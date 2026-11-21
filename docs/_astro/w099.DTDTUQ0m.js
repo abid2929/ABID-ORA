@@ -1,0 +1,2 @@
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./puzzle.DALAy_L6.js","./three.module.CMag8gOt.js","./RoundedBoxGeometry.SmXy-bb1.js","./host.4X8hICWx.js","./OutputPass.COZ7N13M.js","./common.BniYhdKF.js","./host.BdJRkGNn.css"])))=>i.map(i=>d[i]);
+import{t as e}from"./host.4X8hICWx.js";import{t}from"./preload-helper.BQUUbbNx.js";function n(n){e(n,{label:`Prism Lab`,game:()=>t(()=>import(`./puzzle.DALAy_L6.js`),__vite__mapDeps([0,1,2,3,4,5,6]),import.meta.url)})}export{n as default};

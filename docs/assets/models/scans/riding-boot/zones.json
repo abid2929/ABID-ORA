@@ -1,0 +1,56 @@
+{
+ "zones": [
+  {
+   "id": "sole",
+   "label": "Sole & heel",
+   "texels": 118325,
+   "lum": [
+    0.0084,
+    0.983
+   ],
+   "hex": [
+    "#141413",
+    "#f5ffff"
+   ]
+  },
+  {
+   "id": "lining",
+   "label": "Lining",
+   "texels": 9543,
+   "lum": [
+    0.0027,
+    0.8425
+   ],
+   "hex": [
+    "#070808",
+    "#90fefe"
+   ]
+  },
+  {
+   "id": "shaft",
+   "label": "Quilted shaft",
+   "texels": 419455,
+   "lum": [
+    0.0025,
+    0.9718
+   ],
+   "hex": [
+    "#070707",
+    "#eeffff"
+   ]
+  },
+  {
+   "id": "foot",
+   "label": "Foot",
+   "texels": 179379,
+   "lum": [
+    0.0019,
+    0.9874
+   ],
+   "hex": [
+    "#060606",
+    "#f9ffff"
+   ]
+  }
+ ]
+}

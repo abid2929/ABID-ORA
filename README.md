@@ -16,7 +16,8 @@ Version: **0.9.14** (21 Nov 2026). Staging site: https://abidora.boostnixmedia.c
 | `src/` | Pages, layouts, components, world code (`src/worlds/`), styles |
 | `public/` | Files copied as-is: assets, PHP API (`api/`), admin, installer, private lib (`_abidora/`) |
 | `tools/` | Build, publish, package and check scripts |
-| `docs/` | Plans, audits, design system, changelog, feature status |
+| `project-docs/` | Plans, audits, design system, changelog, feature status |
+| `docs/` | Built static preview for GitHub Pages (no PHP, so AI and admin do not run there) |
 
 ## Build
 ```bash
@@ -34,10 +35,10 @@ Needs Node 20+ and PHP 8 on the build machine.
 ## Not in this repository (on purpose)
 - **No secrets.** API keys, database logins, admin passwords and `storage/config.php` / `installed.lock` are never committed (see `.gitignore`). If a key is ever committed by mistake, revoke it at the provider right away.
 - The installer's default notification email field is left empty here.
-- Private notes (email setup, the old archive) are not included in `docs/`.
+- Private notes (email setup, the old archive) are not included in `project-docs/`.
 
 ## Assets and licences
-- 3D models: only CC BY / CC0 models are used. Each one is credited on the site's Credits page and in `docs/ASSET_SOURCES_AND_LICENSES.md`.
+- 3D models: only CC BY / CC0 models are used. Each one is credited on the site's Credits page and in `project-docs/ASSET_SOURCES_AND_LICENSES.md`.
 - Photos: Unsplash and similar free-licence sources, also credited on the Credits page.
 - The largest folders are `public/assets/models` (about 140 MB) and `public/assets/music` (about 48 MB). No single file is over 20 MB, so Git LFS is not needed. Raw source models and videos are kept outside this repository.
 

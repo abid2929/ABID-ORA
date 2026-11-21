@@ -1,0 +1,26 @@
+{
+ "zones": [
+  {
+   "id": "hardware",
+   "label": "Metal hardware",
+   "texels": 12804,
+   "lum": [
+    0.134
+   ],
+   "hex": [
+    "#69635d"
+   ]
+  },
+  {
+   "id": "leather",
+   "label": "Leather",
+   "texels": 491829,
+   "lum": [
+    0.02
+   ],
+   "hex": [
+    "#202020"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,2 @@
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./robotics.DT1Ts7pt.js","./three.module.CMag8gOt.js","./host.BIbtqxCo.js","./common.8PmWospT.js","./OrbitControls.CWq36kC6.js","./OutputPass.COZ7N13M.js"])))=>i.map(i=>d[i]);
+import{t as e}from"./host.BIbtqxCo.js";import{t}from"./preload-helper.BQUUbbNx.js";var n=n=>e(n,()=>t(()=>import(`./robotics.DT1Ts7pt.js`),__vite__mapDeps([0,1,2,3,4,5]),import.meta.url));export{n as default};

@@ -1,0 +1,2 @@
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./racing.D_x3GqIT.js","./BufferGeometryUtils.BfAR3oKT.js","./three.module.CMag8gOt.js","./host.xuU0d0sx.js","./OutputPass.COZ7N13M.js","./common.8PmWospT.js","./host.BdJRkGNn.css","./preload-helper.BQUUbbNx.js"])))=>i.map(i=>d[i]);
+import{t as e}from"./host.xuU0d0sx.js";import{t}from"./preload-helper.BQUUbbNx.js";function n(n){e(n,{label:n.t(`tab.race`,`Race in 3D`),game:()=>t(()=>import(`./racing.D_x3GqIT.js`),__vite__mapDeps([0,1,2,3,4,5,6,7]),import.meta.url)})}export{n as default};

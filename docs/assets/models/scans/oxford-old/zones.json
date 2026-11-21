@@ -1,0 +1,43 @@
+{
+ "zones": [
+  {
+   "id": "sole",
+   "label": "Sole & heel",
+   "texels": 191565,
+   "lum": [
+    0.0327,
+    0.9889
+   ],
+   "hex": [
+    "#432c12",
+    "#f9ffff"
+   ]
+  },
+  {
+   "id": "lining",
+   "label": "Lining & insole",
+   "texels": 34922,
+   "lum": [
+    0.0151,
+    0.8121
+   ],
+   "hex": [
+    "#301807",
+    "#63fffe"
+   ]
+  },
+  {
+   "id": "upper",
+   "label": "Leather upper",
+   "texels": 386452,
+   "lum": [
+    0.0115,
+    0.9498
+   ],
+   "hex": [
+    "#281405",
+    "#ddffff"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,2 @@
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./explore.BiLc-qxu.js","./three.module.CMag8gOt.js","./BufferGeometryUtils.BfAR3oKT.js","./host.4X8hICWx.js","./OutputPass.COZ7N13M.js","./common.BniYhdKF.js","./host.BdJRkGNn.css"])))=>i.map(i=>d[i]);
+import{t as e}from"./host.4X8hICWx.js";import{t}from"./preload-helper.BQUUbbNx.js";function n(n){e(n,{label:`Isle of Abidora`,game:()=>t(()=>import(`./explore.BiLc-qxu.js`),__vite__mapDeps([0,1,2,3,4,5,6]),import.meta.url)})}export{n as default};

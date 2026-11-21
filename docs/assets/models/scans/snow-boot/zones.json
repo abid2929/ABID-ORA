@@ -1,0 +1,56 @@
+{
+ "zones": [
+  {
+   "id": "sole",
+   "label": "Sole",
+   "texels": 164731,
+   "lum": [
+    0.1487,
+    0.9675
+   ],
+   "hex": [
+    "#725d70",
+    "#edfffe"
+   ]
+  },
+  {
+   "id": "lining",
+   "label": "Lining & cuff",
+   "texels": 30381,
+   "lum": [
+    0.0925,
+    0.8022
+   ],
+   "hex": [
+    "#624a74",
+    "#50fefe"
+   ]
+  },
+  {
+   "id": "trim",
+   "label": "White trim",
+   "texels": 36525,
+   "lum": [
+    0.4499,
+    0.9692
+   ],
+   "hex": [
+    "#b3b2b0",
+    "#edfffe"
+   ]
+  },
+  {
+   "id": "shell",
+   "label": "Padded shell",
+   "texels": 424045,
+   "lum": [
+    0.0343,
+    0.9662
+   ],
+   "hex": [
+    "#3e263e",
+    "#ebffff"
+   ]
+  }
+ ]
+}

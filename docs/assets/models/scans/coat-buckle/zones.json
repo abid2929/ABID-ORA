@@ -1,0 +1,37 @@
+{
+ "zones": [
+  {
+   "id": "buckles",
+   "label": "Buckles",
+   "texels": 10824,
+   "lum": [
+    0.4192
+   ],
+   "hex": [
+    "#a6a7a7"
+   ]
+  },
+  {
+   "id": "red",
+   "label": "Red leather",
+   "texels": 206399,
+   "lum": [
+    0.0307
+   ],
+   "hex": [
+    "#482622"
+   ]
+  },
+  {
+   "id": "black",
+   "label": "Black leather",
+   "texels": 261341,
+   "lum": [
+    0.0158
+   ],
+   "hex": [
+    "#1e1e1d"
+   ]
+  }
+ ]
+}
