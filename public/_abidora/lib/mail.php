@@ -126,7 +126,7 @@ function ab_autoreply(string $lang, string $name): array {
     . '<div style="height:1px;background:linear-gradient(90deg,#d6568c,#e8b46a,rgba(232,180,106,0));margin:20px 0 22px"></div></td></tr>'
     . '<tr><td style="padding:0 34px;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.6;color:#e6ddd0;text-align:' . $al . '">'
     . '<p style="margin:0 0 14px">' . $e($hello) . '</p><p style="margin:0 0 14px">' . $e($p1) . '</p><p style="margin:0 0 26px;color:#b9ae9f">' . $e($p2) . '</p>'
-    . ($url !== '' ? ab_mail_btn($url, $btn, !$ls) : '')
+    . ($url !== '' ? ab_mail_btn($url, $btn, !$ls, 'neptune') : '')
     . '<p style="margin:0 0 2px;font-family:Georgia,serif;font-style:italic;font-size:18px;color:#e8b46a">— Abidora</p><p style="margin:0 0 30px;font-size:13px;color:#8f8676">' . $e($replyHint) . '</p></td></tr>'
     . '<tr><td style="padding:18px 34px 26px;border-top:1px solid rgba(240,228,210,.1);font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;font-size:12px;line-height:1.5;color:#7d7568;text-align:' . $al . '">' . $e(sprintf($foot, $siteName)) . '</td></tr>'
     . '</table></td></tr></table></body></html>';
@@ -178,7 +178,7 @@ function ab_owner_reply(string $toName, string $reply, string $original, string 
     . '<div style="margin:0 0 26px;padding:14px 16px;border-left:2px solid rgba(232,180,106,.45);background:rgba(240,228,210,.04);border-radius:0 10px 10px 0;font-size:14px;line-height:1.55;color:#a89f92">'
     . '<div style="margin:0 0 6px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#7d7568">Your message · ' . $e($sentAt) . ' UTC</div>'
     . $br($original) . '</div>'
-    . ($site !== '' ? ab_mail_btn($site, 'Visit Abidora') : '')
+    . ($site !== '' ? ab_mail_btn($site, 'Visit Abidora', false, 'sunset') : '')
     . '</td></tr>'
     . '<tr><td style="padding:18px 34px 26px;border-top:1px solid rgba(240,228,210,.1);' . $sans . ';font-size:12px;line-height:1.5;color:#7d7568">You can reply to this email directly. · ' . $e($host) . '</td></tr>'
     . '</table></td></tr></table></body></html>';
@@ -224,7 +224,7 @@ function ab_invite(string $lang, string $signName): array {
     . '<tr><td style="padding:0 34px;' . $sans . ';font-size:16px;line-height:1.65;color:#e6ddd0">'
     . '<p style="margin:0 0 14px;font-family:Georgia,serif;font-size:24px;line-height:1.2;color:#f0e6d6">' . $e($head) . '</p>'
     . '<p style="margin:0 0 14px">' . $e($p1) . '</p><p style="margin:0 0 26px;color:#b9ae9f">' . $e($p2) . '</p>'
-    . ($url !== '' ? ab_mail_btn($url, $btn, $bn) : '')
+    . ($url !== '' ? ab_mail_btn($url, $btn, $bn, 'nebula') : '')
     . '<p style="margin:0 0 2px;font-family:Georgia,serif;font-style:italic;font-size:18px;color:#e8b46a">— ' . $e($signName) . '</p>'
     . '<p style="margin:0 0 30px;font-size:13px;color:#8f8676">' . $e($role) . '</p></td></tr>'
     . '<tr><td style="padding:18px 34px 26px;border-top:1px solid rgba(240,228,210,.1);' . $sans . ';font-size:12px;line-height:1.5;color:#7d7568">' . $e($foot) . ' · ' . $e($host) . '</td></tr>'
@@ -246,16 +246,17 @@ function ab_mail_hero(string $pic = 'solar-header'): string {
 /** 0.9.17: the premium gold "Visit" button used in every Abidora email.
     Bulletproof: a table cell carries the gold colour, so the button stays gold even where Gmail/Outlook drop gradients or shadows.
     Under it, a quiet line with the real site address (taken from the site base, so it is the live domain on the server). */
-const AB_MAIL_BTN = 'space';   // owner's button colour: nebula | space | neptune
-function ab_mail_btn(string $url, string $label, bool $big = false): string {
+const AB_MAIL_BTN = 'nebula';   // default button colour. Owner (22 Nov): each email has its own: invite = nebula, reply = sunset (the Sun picture), message from the universe = neptune
+function ab_mail_btn(string $url, string $label, bool $big = false, string $style = AB_MAIL_BTN): string {
   $e = fn($s) => htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
   $dom = preg_replace('#^https?://#', '', rtrim($url, '/'));
   $long = mb_strlen($label) > 14; $fs = $big ? '16' : ($long ? '12' : '13'); $sp = $big ? '.02em' : ($long ? '.08em' : '.16em');
   /* button colour sets (owner picks one): nebula purple, deep space with a gold line, neptune blue */
   $P = ['nebula' => ['#3a1a6e', 'linear-gradient(135deg,#1d0f45 0%,#4b1f86 50%,#a23b8f 100%)', '#8f6ad8', '#f6ecff', '0 0 0 1px rgba(170,130,255,.45),0 10px 30px rgba(140,80,230,.45)', '#f6ecff', '#3a1a6e'],
         'space'  => ['#120f1c', 'linear-gradient(180deg,#1a1626 0%,#0f0d16 100%)', '#e8b46a', '#f0d9a8', '0 0 0 1px rgba(232,180,106,.35),0 0 24px rgba(232,180,106,.22)', '#e8b46a', '#120f1c'],
+        'sunset' => ['#a8381c', 'linear-gradient(135deg,#4a120e 0%,#b23a1c 50%,#f0943a 100%)', '#f5a970', '#fff3ea', '0 0 0 1px rgba(245,169,112,.45),0 10px 30px rgba(240,120,50,.45)', '#fff3ea', '#a8381c'],
         'neptune'=> ['#14347a', 'linear-gradient(135deg,#0a1a44 0%,#1a4aa6 55%,#3a9ad8 100%)', '#7cc3f0', '#eef7ff', '0 0 0 1px rgba(124,195,240,.45),0 10px 30px rgba(58,154,216,.45)', '#eef7ff', '#14347a']];
-  [$bg, $grad, $bd, $tx, $glow, $ib, $ic] = $P[AB_MAIL_BTN] ?? $P['nebula'];
+  [$bg, $grad, $bd, $tx, $glow, $ib, $ic] = $P[$style] ?? $P['nebula'];
   return '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 12px;border-collapse:separate"><tr>'
     . '<td align="center" bgcolor="' . $bg . '" style="border-radius:999px;background:' . $bg . ';background-image:' . $grad . ';box-shadow:' . $glow . '">'
     . '<a href="' . $e($url) . '" target="_blank" style="display:inline-block;padding:15px 30px 15px 22px;border-radius:999px;border:1px solid ' . $bd . ';color:' . $tx . ';text-decoration:none;font-family:Georgia,\'Times New Roman\',serif;font-size:' . $fs . 'px;font-weight:bold;letter-spacing:' . $sp . ';text-transform:uppercase;line-height:1;white-space:nowrap">'
