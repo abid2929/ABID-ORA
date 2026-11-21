@@ -1,0 +1,26 @@
+{
+ "zones": [
+  {
+   "id": "piping",
+   "label": "Piping",
+   "texels": 28588,
+   "lum": [
+    0.2861
+   ],
+   "hex": [
+    "#bc7b57"
+   ]
+  },
+  {
+   "id": "fabric",
+   "label": "Brocade",
+   "texels": 581086,
+   "lum": [
+    0.1188
+   ],
+   "hex": [
+    "#a23926"
+   ]
+  }
+ ]
+}
