@@ -1,0 +1,59 @@
+{
+  "brand": "Abidora",
+  "name": "Abid Islam",
+  "role_en": "Founder & Creator",
+  "about_en": "Abidora is a global atlas of the world rebuilt as living websites, designed and coded by Abid Islam.",
+  "linkedin": "",
+  "github": "",
+  "facebook": "",
+  "founder_skills": [
+    {
+      "key": "web",
+      "level": ""
+    },
+    {
+      "key": "htmlcss",
+      "level": ""
+    },
+    {
+      "key": "js",
+      "level": ""
+    },
+    {
+      "key": "react",
+      "level": ""
+    },
+    {
+      "key": "ai",
+      "level": ""
+    },
+    {
+      "key": "uiux",
+      "level": ""
+    },
+    {
+      "key": "creative",
+      "level": ""
+    },
+    {
+      "key": "video",
+      "level": ""
+    },
+    {
+      "key": "marketing",
+      "level": ""
+    },
+    {
+      "key": "product",
+      "level": ""
+    },
+    {
+      "key": "entre",
+      "level": ""
+    },
+    {
+      "key": "business",
+      "level": ""
+    }
+  ]
+}

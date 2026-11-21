@@ -1,0 +1,144 @@
+{
+ "dir": ".",
+ "uvpos": "uvpos.npz",
+ "textures": [
+  "baseColor_1.jpg",
+  "baseColor_2.jpg",
+  "baseColor_3.jpg"
+ ],
+ "clusters": "clusters.png.centres.npy",
+ "axes": {
+  "len": 0,
+  "side": 1,
+  "up": 2
+ },
+ "out": "zones",
+ "zones": [
+  {
+   "id": "sole",
+   "label": "Sole",
+   "rules": [
+    {
+     "cluster": [
+      0
+     ]
+    }
+   ]
+  },
+  {
+   "id": "stripes",
+   "label": "Side stripes",
+   "rules": [
+    {
+     "cluster": [
+      3
+     ]
+    }
+   ]
+  },
+  {
+   "id": "pulls",
+   "label": "Pull loops",
+   "rules": [
+    {
+     "cluster": [
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": "heel",
+   "label": "Heel panel",
+   "rules": [
+    {
+     "cluster": [
+      4
+     ]
+    }
+   ]
+  },
+  {
+   "id": "laces",
+   "label": "Laces",
+   "rules": [
+    {
+     "cluster": [
+      6
+     ],
+     "up": [
+      0.42,
+      1
+     ],
+     "len": [
+      0.25,
+      0.85
+     ],
+     "facing": [
+      2,
+      1,
+      0.2
+     ]
+    }
+   ]
+  },
+  {
+   "id": "lining",
+   "label": "Lining",
+   "rules": [
+    {
+     "cluster": [
+      6
+     ]
+    }
+   ]
+  },
+  {
+   "id": "upper",
+   "label": "Knit upper",
+   "rules": [
+    {
+     "cluster": [
+      2,
+      5
+     ]
+    }
+   ]
+  }
+ ],
+ "islands": {
+  "vote": true,
+  "min": 200,
+  "rules": [
+   {
+    "zone": "laces",
+    "max": 6000,
+    "span": {
+     "side": [
+      0.3,
+      1
+     ]
+    },
+    "majority": [
+     "laces",
+     "lining",
+     "heel"
+    ]
+   },
+   {
+    "zone": "lining",
+    "majority": [
+     "laces",
+     "lining",
+     "heel"
+    ],
+    "at": {
+     "len": [
+      0.14,
+      1
+     ]
+    }
+   }
+  ]
+ }
+}

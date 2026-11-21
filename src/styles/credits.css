@@ -1,0 +1,10 @@
+.cr{padding:140px var(--gx) 80px}
+.cr h1{font-family:var(--serif);font-weight:400;font-size:clamp(56px,9vw,140px);line-height:.9;letter-spacing:-.03em}
+.cr .lead{color:var(--bone2);max-width:62ch;margin:24px 0 40px;font-size:17px}
+.cr .lead a{text-decoration:underline;text-underline-offset:3px}
+.tw{overflow-x:auto;border-top:1px solid var(--line)}
+.cr table{border-collapse:collapse;width:100%;min-width:620px}
+.cr td,.cr th{padding:12px 10px;border-bottom:1px solid var(--line);text-align:start;vertical-align:middle}
+.cr th{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);font-weight:400}
+.cr td img{width:72px;height:48px;object-fit:cover;display:block}
+.cr td a{text-decoration:underline;text-underline-offset:3px;font-family:var(--mono);font-size:12px}

@@ -1,0 +1,89 @@
+---
+import Base from '../../layouts/Base.astro';
+import Bar from '../../components/Bar.astro';
+import Foot from '../../components/Foot.astro';
+import '../../styles/studio.css';
+import { t, ta, u } from '../../lib/t';
+import { THEMES, TYPE } from '../../data/themes';
+import { CURSORS } from '../../data/cursors';
+const links: [string, string][] = [[u('home'), 'nav.home'], [u('worlds'), 'nav.worlds'], [u('themes'), 'nav.themes'], [u('cursors'), 'nav.cursors']];
+const moods = ['natural', 'noir', 'dusk', 'arctic', 'neon'];
+---
+<Base title="us.meta.title" desc="us.meta.desc" bodyClass="ustudio hub">
+<div id="cur" aria-hidden="true"><span></span></div>
+<div id="grain" aria-hidden="true"></div>
+<Bar links={links} />
+<main id="main" class="us">
+ <header class="ush">
+  <p class="mono eb">{t('us.eyebrow')}</p>
+  <h1 set:html={t('us.title')}></h1>
+  <p class="lead">{t('us.lead')}</p>
+ </header>
+ <div class="shared" id="shared" role="region" aria-live="polite" hidden>
+  <p><b>{t('us.shared.h')}</b> <span id="sharedd"></span></p>
+  <div class="btnrow"><button type="button" class="b1 mono" id="shy">{t('us.shared.apply')}</button><button type="button" class="pill2 mono" id="shn">{t('us.shared.ignore')}</button></div>
+ </div>
+ <section class="hubg">
+  <div class="card-u" id="ucard" aria-labelledby="uc-h">
+   <p class="mono lbl">{t('us.card')}</p>
+   <h2 id="uc-h"><span id="uct">Abidora Night</span></h2>
+   <dl class="ucl mono">
+    <div><dt>{t('th.type')}</dt><dd id="ucy"></dd></div>
+    <div><dt>{t('studio.cursor')}</dt><dd id="ucc"></dd></div>
+    <div><dt>{t('studio.mood')}</dt><dd id="ucm"></dd></div>
+    <div><dt>{t('studio.motion')}</dt><dd id="ucv"></dd></div>
+    <div><dt>{t('studio.grain')}</dt><dd id="ucg"></dd></div>
+    <div><dt>{t('us.size')}</dt><dd id="ucs"></dd></div>
+    <div><dt>{t('us.favs')}</dt><dd id="ucf"></dd></div>
+   </dl>
+   <div class="sw" id="ucsw" aria-hidden="true"></div>
+   <p class="ucn">{t('us.private')}</p>
+  </div>
+  <form class="ctrls" id="ctrls">
+   <label class="sel mono"><span>{t('nav.themes')}</span><select name="theme">{THEMES.map((r) => <option value={r[0]}>{r[1]}</option>)}</select></label>
+   <label class="sel mono"><span>{t('th.type')}</span><select name="type"><option value="auto">{t('th.type.auto')}</option>{Object.entries(TYPE).map(([k, v]) => <option value={k}>{v.n}</option>)}</select></label>
+   <label class="sel mono"><span>{t('studio.cursor')}</span><select name="cursor"><option value="lens">{t('cu.lens')}</option><option value="native">{t('cu.system')}</option><option value="custom">{t('cu.custom')}</option>{CURSORS.map((r) => <option value={r[0]}>{r[1]}</option>)}</select></label>
+   <label class="sel mono"><span>{t('studio.mood')}</span><select name="mood">{moods.map((m) => <option value={m}>{t(`js.mood.${m}`)}</option>)}</select></label>
+   <fieldset class="seg2"><legend class="mono">{t('studio.motion')}</legend><label><input type="radio" name="motion" value="full"><span>{t('studio.m.full')}</span></label><label><input type="radio" name="motion" value="calm"><span>{t('studio.m.calm')}</span></label></fieldset>
+   <fieldset class="seg2"><legend class="mono">{t('studio.grain')}</legend><label><input type="radio" name="grain" value="on"><span>{t('studio.on')}</span></label><label><input type="radio" name="grain" value="off"><span>{t('studio.off')}</span></label></fieldset>
+   <label class="rng mono"><span>{t('us.size')} <output id="szo">100%</output></span><input type="range" name="scale" min="90" max="130" step="5" value="100"></label>
+   <div class="stl2 mono"><a href={u('themes')}>{t('th.open')} →</a><a href={u('cursors')}>{t('cu.open')} →</a></div>
+  </form>
+ </section>
+
+ <section class="blk" aria-labelledby="pr-h">
+  <header><h2 id="pr-h" class="mono">{t('us.presets.h')}</h2><p>{t('us.presets.p')}</p></header>
+  <ul class="presets" id="presets"></ul>
+ </section>
+
+ <section class="blk" aria-labelledby="my-h">
+  <header><h2 id="my-h" class="mono">{t('us.mine.h')}</h2><p>{t('us.mine.p')}</p></header>
+  <form class="saveu" id="saveu"><label><span class="skip">{t('us.mine.name')}</span><input id="uname" maxlength="40" placeholder={ta('us.mine.name')} autocomplete="off"></label><button type="submit" class="b1 mono">{t('us.mine.save')}</button></form>
+  <p class="mono msg2" id="mymsg" role="status" aria-live="polite"></p>
+  <ul class="mine" id="mine"></ul>
+ </section>
+
+ <section class="blk" aria-labelledby="fv-h">
+  <header><h2 id="fv-h" class="mono">{t('us.favs.h')}</h2><p>{t('us.favs.p')}</p></header>
+  <ul class="favs" id="favs"></ul>
+ </section>
+
+ <section class="blk" aria-labelledby="sh-h">
+  <header><h2 id="sh-h" class="mono">{t('us.share.h')}</h2><p>{t('us.share.p')}</p></header>
+  <div class="share">
+   <label class="mono">{t('us.share.code')}<textarea id="code" rows="3" readonly></textarea></label>
+   <div class="btnrow"><button type="button" class="pill2 mono" id="copy">{t('us.share.copy')}</button><button type="button" class="pill2 mono" id="copyl">{t('us.share.link')}</button><button type="button" class="pill2 mono" id="dl">{t('us.share.download')}</button></div>
+   <label class="mono">{t('us.import.h')}<textarea id="imp" rows="3" placeholder={ta('us.import.ph')}></textarea></label>
+   <div class="btnrow"><button type="button" class="b1 mono" id="impb">{t('us.import.apply')}</button><label class="pill2 mono filel">{t('us.import.file')}<input type="file" id="impf" accept="application/json,.json" hidden></label></div>
+   <p class="mono msg2" id="shmsg" role="status" aria-live="polite"></p>
+  </div>
+ </section>
+
+ <section class="blk danger" aria-labelledby="rs-h">
+  <header><h2 id="rs-h" class="mono">{t('us.reset.h')}</h2><p>{t('us.reset.p')}</p></header>
+  <div class="btnrow"><button type="button" class="pill2 mono" id="rsall">{t('us.reset.btn')}</button></div>
+ </section>
+</main>
+<Foot links={[[u('home'), 'nav.home'], [u('worlds'), 'nav.worlds'], [u('themes'), 'nav.themes'], [u('cursors'), 'nav.cursors']]} />
+<script>import '../../scripts/studio-page';</script>
+</Base>

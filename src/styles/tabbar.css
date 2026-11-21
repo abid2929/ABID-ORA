@@ -1,0 +1,69 @@
+/* 0.9 phone tab bar (home group). Owner, 21 Nov: menu at the bottom; the AI button alone in the bottom-right corner,
+   beside the bar and never on top of it. */
+.tabbar{display:none}
+@media (max-width:820px){
+ body:is(.home,.worlds,.founder,.credits,.ustudio,.galaxy,.nf) .tabbar{display:grid}
+ body:is(.home,.worlds,.founder,.credits,.ustudio,.galaxy,.nf){padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+ .tabbar{position:fixed;z-index:90;left:10px;right:10px;bottom:calc(8px + env(safe-area-inset-bottom,0px));height:62px;grid-template-columns:repeat(5,1fr);align-items:center;
+  border-radius:22px;background:rgba(16,15,13,.74);-webkit-backdrop-filter:blur(18px) saturate(1.6);backdrop-filter:blur(18px) saturate(1.6);
+  box-shadow:0 0 0 1px rgba(236,230,220,.10) inset,0 18px 40px rgba(0,0,0,.5);transition:transform .45s cubic-bezier(.2,.8,.2,1),opacity .3s}
+  .tabbar.tb-hide{transform:translateY(calc(100% + 24px));opacity:0}
+ html.menu-open .tabbar{display:none}
+ /* the AI button: its own round button at the right end of the bar's row, same height, always visible */
+ /* 21 Nov (owner): the AI button sits in the middle of the bar, in line with the tabs */
+ body:is(.home,.worlds,.founder,.credits,.ustudio,.galaxy,.nf) .aifab{z-index:91;left:50%;right:auto;bottom:calc(13px + env(safe-area-inset-bottom,0px));width:52px;height:52px;padding:0;border-radius:50%;justify-content:center;gap:0;transform:translateX(-50%);transition:transform .45s cubic-bezier(.2,.8,.2,1),opacity .3s}
+ [dir=rtl] body:is(.home,.worlds,.founder,.credits,.ustudio,.galaxy,.nf) .aifab{left:50%;right:auto}
+ body:is(.home,.worlds,.founder,.credits,.ustudio,.galaxy,.nf):has(.tabbar.tb-hide) .aifab{transform:translate(-50%,calc(100% + 30px));opacity:0}
+ html.menu-open body .aifab{display:none}
+ .tb-mid{display:block}
+ body:is(.home,.worlds,.founder,.credits,.ustudio,.galaxy,.nf) .aifab span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+ .tb{display:grid;justify-items:center;gap:3px;color:rgba(236,230,220,.66);font-family:var(--sans);font-size:11px;letter-spacing:.01em;padding:8px 0;-webkit-tap-highlight-color:transparent;position:relative;min-height:48px;align-content:center}
+ .tb svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+ .tb[aria-current]{color:var(--bone)}
+ .tb[aria-current]::after{content:"";position:absolute;top:3px;width:4px;height:4px;border-radius:50%;background:var(--signal);box-shadow:0 0 8px var(--signal)}
+ .tb:active{transform:scale(.94)}
+ [data-tone=light] .tabbar{background:rgba(255,253,249,.84);box-shadow:0 0 0 1px rgba(0,0,0,.08) inset,0 14px 30px rgba(0,0,0,.14)}
+ [data-tone=light] .tb{color:rgba(20,18,16,.62)}[data-tone=light] .tb[aria-current]{color:#141210}
+}
+@media (prefers-reduced-motion:reduce){.tabbar{transition:none}}
+
+/* 21 Nov (owner: "premium banai dew"): premium bar. Deep smoked glass with a thin gold edge, a soft notch for the
+   raised AI orb, and the active tab lit in gold with a quiet pill behind it. */
+@media (max-width:820px){
+ .tabbar{height:66px;border-radius:26px;background:linear-gradient(180deg,rgba(30,27,22,.82),rgba(10,9,8,.9));
+  -webkit-backdrop-filter:blur(22px) saturate(1.8);backdrop-filter:blur(22px) saturate(1.8);
+  -webkit-mask:radial-gradient(circle 35px at 50% -6px,transparent 33px,#000 34px);mask:radial-gradient(circle 35px at 50% -6px,transparent 33px,#000 34px);
+  box-shadow:0 1px 0 rgba(255,236,200,.10) inset,0 -1px 0 rgba(0,0,0,.5) inset,0 22px 50px rgba(0,0,0,.6),0 4px 14px rgba(0,0,0,.35)}
+ .tabbar::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;
+  background:linear-gradient(100deg,rgba(232,180,106,.05) 0%,rgba(232,180,106,.55) 30%,rgba(255,240,214,.18) 50%,rgba(232,180,106,.55) 70%,rgba(232,180,106,.05) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+ .tb{font:500 10.5px/1 var(--sans);letter-spacing:.04em;color:rgba(236,230,220,.58);gap:5px;transition:color .25s}
+ .tb svg{width:22px;height:22px;stroke-width:1.5;transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+ .tb::before{content:"";position:absolute;inset:7px 14%;border-radius:16px;background:radial-gradient(120% 100% at 50% 0%,rgba(232,180,106,.22),rgba(232,180,106,.04) 70%);
+  box-shadow:0 0 0 1px rgba(232,180,106,.22) inset;opacity:0;transform:scale(.85);transition:opacity .3s,transform .3s}
+ .tb[aria-current]{color:#f3d49c}
+ .tb[aria-current]::before{opacity:1;transform:none}
+ .tb[aria-current] svg{transform:translateY(-1px)}
+ .tb[aria-current]::after{top:auto;bottom:4px;width:14px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#e8b46a,transparent);box-shadow:0 0 10px #e8b46a}
+ /* the raised AI orb in the notch */
+ body:is(.home,.worlds,.founder,.credits,.ustudio,.galaxy,.nf) .aifab{width:58px;height:58px;bottom:calc(34px + env(safe-area-inset-bottom,0px));
+  background:radial-gradient(circle at 34% 26%,rgba(255,246,226,.55),rgba(255,246,226,0) 22%),radial-gradient(circle at 50% 62%,rgba(232,180,106,.55),rgba(232,180,106,0) 58%),radial-gradient(circle at 70% 80%,rgba(120,150,255,.28),rgba(120,150,255,0) 45%),radial-gradient(circle at 50% 50%,#2a2218,#0c0b09 72%);border:0;color:#fff4de;
+  box-shadow:0 0 0 1.5px rgba(232,180,106,.85),0 0 0 6px rgba(232,180,106,.08),0 10px 26px rgba(0,0,0,.55),0 0 26px rgba(232,180,106,.28)}
+ body:is(.home,.worlds,.founder,.credits,.ustudio,.galaxy,.nf) .aifab::before{content:"";position:absolute;inset:-7px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0 70%,rgba(232,180,106,.7) 85%,transparent 100%);-webkit-mask:radial-gradient(circle,transparent 31px,#000 32px,#000 33px,transparent 34px);mask:radial-gradient(circle,transparent 31px,#000 32px,#000 33px,transparent 34px);animation:tbOrb 6s linear infinite}
+ body:is(.home,.worlds,.founder,.credits,.ustudio,.galaxy,.nf) .aifab svg{width:30px;height:30px;filter:drop-shadow(0 0 6px rgba(255,214,150,.75));animation:tbBreath 3.6s ease-in-out infinite}
+ body:is(.home,.worlds,.founder,.credits,.ustudio,.galaxy,.nf) .aifab::after{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;background:linear-gradient(160deg,rgba(255,255,255,.22),rgba(255,255,255,0) 45%)}
+ [data-tone=light] .tabbar{background:linear-gradient(180deg,rgba(255,252,246,.92),rgba(246,240,230,.94))}
+ [data-tone=light] .tb[aria-current]{color:#8a5a14}
+}
+@keyframes tbOrb{to{transform:rotate(1turn)}}
+@keyframes tbBreath{0%,100%{transform:scale(1);opacity:.92}50%{transform:scale(1.07);opacity:1}}
+@media (prefers-reduced-motion:reduce){body .aifab::before,body .aifab svg{animation:none}}
+
+/* 0.9.11 floating Back pill: on every page except home, beside the logo; on world pages only after the in-page Back scrolls away */
+.fback{position:fixed;z-index:62;top:calc(max(18px,env(safe-area-inset-top,0px)) - 4px);inset-inline-start:calc(var(--gx,20px) + 104px);display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 16px 0 13px;border-radius:999px;border:1px solid rgba(255,255,255,.22);background:rgba(14,12,10,.62);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);color:#f3ece2;font-size:12px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;box-shadow:0 6px 20px rgba(0,0,0,.28);transition:background .25s,color .25s,opacity .25s}
+.fback:hover{background:#ece6dc;color:#111}
+.fback:focus-visible{outline:2px solid #e8b46a;outline-offset:2px}
+.fback span[aria-hidden]{font-size:15px;letter-spacing:0}
+[dir=rtl] .fback span[aria-hidden]{display:inline-block;transform:scaleX(-1)}
+@media (max-width:820px){.fback{min-height:38px;padding:0 13px 0 11px;inset-inline-start:calc(var(--gx,16px) + 92px)}}

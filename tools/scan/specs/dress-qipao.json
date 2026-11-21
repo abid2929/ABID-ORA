@@ -1,0 +1,36 @@
+{
+ "dir": ".",
+ "uvpos": "uvpos.npz",
+ "textures": [
+  "base.jpg"
+ ],
+ "axes": {
+  "len": 1,
+  "side": 0,
+  "up": 2
+ },
+ "out": "zones",
+ "smooth": 1,
+ "zones": [
+  {
+   "id": "piping",
+   "label": "Piping",
+   "rules": [
+    {
+     "edge": 12,
+     "sat": [
+      0,
+      0.66
+     ]
+    }
+   ]
+  },
+  {
+   "id": "fabric",
+   "label": "Brocade",
+   "rules": [
+    {}
+   ]
+  }
+ ]
+}

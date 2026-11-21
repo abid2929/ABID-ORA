@@ -1,0 +1,69 @@
+---
+import Base from '../../layouts/Base.astro';
+import Bar from '../../components/Bar.astro';
+import Foot from '../../components/Foot.astro';
+import '../../styles/studio.css';
+import { t, ta, u } from '../../lib/t';
+import { CFAMILIES } from '../../data/cursors';
+const links: [string, string][] = [[u('home'), 'nav.home'], [u('worlds'), 'nav.worlds'], [u('themes'), 'nav.themes'], [u('studio'), 'nav.studio']];
+const shapes = ['dot', 'ring', 'ringdot', 'cross', 'plus', 'square', 'diamond', 'tri', 'hex', 'star', 'bracket', 'blob', 'beam', 'orbit', 'reticle'];
+const trails = ['none', 'line', 'ribbon', 'dots', 'comet', 'ghost', 'particles', 'sparks', 'rise', 'fall', 'constellation'];
+const clicks = ['ripple', 'rings', 'burst', 'shrink', 'none'];
+---
+<Base title="cu.meta.title" desc="cu.meta.desc" bodyClass="ustudio cursors">
+<div id="cur" aria-hidden="true"><span></span></div>
+<div id="grain" aria-hidden="true"></div>
+<Bar links={links} />
+<main id="main" class="us">
+ <header class="ush">
+  <p class="mono eb">{t('cu.eyebrow')}</p>
+  <h1 set:html={t('cu.title')}></h1>
+  <p class="lead">{t('cu.lead')}</p>
+  <p class="mono cu-touch" id="touch" hidden>{t('cu.touch')}</p>
+ </header>
+ <section class="spec cu-now" aria-labelledby="cn-h" aria-live="polite">
+  <div class="spec-l">
+   <p class="mono lbl">{t('cu.current')}</p>
+   <h2 id="cn-h"><span id="cn">Lens</span></h2>
+   <p class="mono" id="cf"></p>
+   <div class="btnrow"><button type="button" class="mono pill2" id="sys">{t('cu.system')}</button><button type="button" class="mono pill2" id="lens">{t('cu.lens')}</button><button type="button" class="mono pill2" id="crnd">{t('th.random')}</button></div>
+  </div>
+  <div class="pad" id="pad" aria-label={ta('cu.pad')} role="img">
+   <span class="mono">{t('cu.pad')}</span>
+   <a href="#builder" class="mono pad-link">{t('cu.hoverme')}</a>
+  </div>
+ </section>
+ <div class="tools us-tools">
+  <div class="chips2" id="cfams" role="group" aria-label={ta('cu.families')}>
+   <button type="button" data-f="" aria-pressed="true">{t('th.all')}</button>
+   {CFAMILIES.map(([id]) => <button type="button" data-f={id} aria-pressed="false">{t(`cu.fam.${id}`)}</button>)}
+  </div>
+  <p class="mono cnt" id="ccnt" role="status" aria-live="polite"></p>
+ </div>
+ <ul class="cgrid" id="cgrid" aria-label={ta('cu.list')}></ul>
+ <section class="builder" id="builder" aria-labelledby="b-h">
+  <div>
+   <p class="mono lbl">{t('cu.build.label')}</p>
+   <h2 id="b-h">{t('cu.build.h')}</h2>
+   <p class="bl">{t('cu.build.p')}</p>
+  </div>
+  <form class="bform" id="bform">
+   <label class="sel mono"><span>{t('cu.f.shape')}</span><select name="s">{shapes.map((s) => <option value={s}>{t(`cu.s.${s}`)}</option>)}</select></label>
+   <label class="sel mono"><span>{t('cu.f.trail')}</span><select name="t">{trails.map((s) => <option value={s}>{t(`cu.t.${s}`)}</option>)}</select></label>
+   <label class="sel mono"><span>{t('cu.f.click')}</span><select name="k">{clicks.map((s) => <option value={s}>{t(`cu.k.${s}`)}</option>)}</select></label>
+   <label class="sel mono"><span>{t('cu.f.colour')}</span><select name="cm"><option value="signal">{t('cu.c.signal')}</option><option value="bone">{t('cu.c.text')}</option><option value="rainbow">{t('cu.c.rainbow')}</option><option value="custom">{t('cu.c.custom')}</option></select><input type="color" name="c" value="#e8b46a" aria-label={ta('cu.c.custom')}></label>
+   <label class="rng mono"><span>{t('cu.f.size')}</span><input type="range" name="z" min="4" max="90" value="24"></label>
+   <label class="rng mono"><span>{t('cu.f.follow')}</span><input type="range" name="l" min="4" max="100" value="30"></label>
+   <label class="rng mono"><span>{t('cu.f.spring')}</span><input type="range" name="o" min="0" max="85" value="0"></label>
+   <label class="rng mono"><span>{t('cu.f.spin')}</span><input type="range" name="r" min="0" max="8" step=".5" value="0"></label>
+   <label class="chk mono"><input type="checkbox" name="f"> {t('cu.f.fill')}</label>
+   <label class="chk mono"><input type="checkbox" name="b" checked> {t('cu.f.blend')}</label>
+   <div class="btnrow"><button type="button" class="b1 mono" id="bsave">{t('cu.build.save')}</button><button type="button" class="pill2 mono" id="bfrom">{t('cu.build.from')}</button></div>
+   <p class="mono bmsg" id="bmsg" role="status" aria-live="polite"></p>
+  </form>
+ </section>
+ <aside class="honest"><h2 class="mono">{t('cu.how.h')}</h2><p>{t('cu.note')}</p><a class="cta2" href={u('themes')}>{t('th.open')}</a></aside>
+</main>
+<Foot links={[[u('home'), 'nav.home'], [u('worlds'), 'nav.worlds'], [u('themes'), 'nav.themes']]} />
+<script>import '../../scripts/cursors-page';</script>
+</Base>

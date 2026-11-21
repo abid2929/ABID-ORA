@@ -1,0 +1,35 @@
+{
+ "dir": ".",
+ "uvpos": "uvpos.npz",
+ "textures": [
+  "base.jpg"
+ ],
+ "axes": {
+  "len": 1,
+  "side": 0,
+  "up": 2
+ },
+ "out": "zones",
+ "smooth": 1,
+ "zones": [
+  {
+   "id": "hardware",
+   "label": "Metal hardware",
+   "rules": [
+    {
+     "val": [
+      0.33,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": "leather",
+   "label": "Leather",
+   "rules": [
+    {}
+   ]
+  }
+ ]
+}

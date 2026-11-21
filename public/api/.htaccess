@@ -1,0 +1,9 @@
+# Abidora AI answers and voice are sent piece by piece while they are made.
+# Compression or buffering here would hold the whole answer back until the end.
+<FilesMatch "^(ai|tts|stream-test)\.php$">
+  SetEnv no-gzip 1
+  SetEnv dont-vary 1
+  <IfModule mod_headers.c>
+    Header set X-Accel-Buffering "no"
+  </IfModule>
+</FilesMatch>

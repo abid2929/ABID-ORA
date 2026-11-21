@@ -1,0 +1,54 @@
+---
+import Base from '../../layouts/Base.astro';
+import Bar from '../../components/Bar.astro';
+import Foot from '../../components/Foot.astro';
+import '../../styles/worlds.css';
+import { t, ta, u, ROOT } from '../../lib/t';
+import { P30, P30_CATS, P30_UPGRADING } from '../../data/worlds30';
+import '../../styles/atlas30.css';
+const whref = (w: number | 'ai') => w === 'ai' ? u('ai') : `${u('world')}?w=${w}`;
+const links: [string, string][] = [[u('home'), 'nav.home'], [u('galaxy'), 'x.74'], [u('studio'), 'nav.studio'], [u('founder'), 'nav.founder']];
+---
+<Base title="wl.meta.title" desc="wl.meta.desc" bodyClass="worlds">
+<div id="cur" aria-hidden="true"><span></span></div>
+<Bar links={links} />
+<main id="main" class="wl">
+ <header class="wlh">
+  <p class="mono eb">{t('wl.eyebrow')}</p>
+  <h1 set:html={t('wl.title')}></h1>
+  <p class="lead">{t('a30.lead')}</p>
+  <dl class="tally mono" hidden set:html="{{WORLD_TALLY}}"></dl>
+ </header>
+ <section class="a30" aria-labelledby="a30h">
+  <h2 id="a30h" class="a30-h">{t('a30.h')}</h2>
+  <nav class="a30-jump mono" aria-label={ta('wl.cats')}>{P30_CATS.map((c) => <a href={`#a30-${c}`} style={`--tint:${P30.find((w) => w.cat === c)!.tint}`}>{t('p3.c.' + c)}</a>)}</nav>
+  {P30_CATS.map((c) => { const ws = P30.filter((w) => w.cat === c); return <div class="a30-cat" id={`a30-${c}`} style={`--tint:${ws[0].tint}`}>
+   <div class="a30-ban"><img src={`${ROOT}assets/p30/${ws[0].k}-s.webp`} alt="" loading="lazy" decoding="async"><h3>{t('p3.c.' + c)}</h3><span class="mono">{ws.length}</span></div>
+   <ul class="a30-row">{ws.map((w) => { const up = P30_UPGRADING.has(w.k); return <li><a class="a30-card" href={whref(w.w) + (w.tab ? '#' + w.tab : '')}>
+     <img src={`${ROOT}assets/p30/${w.k}-s.webp`} srcset={`${ROOT}assets/p30/${w.k}-s.webp 480w, ${ROOT}assets/p30/${w.k}.webp 960w`} sizes="(max-width:760px) 78vw, 300px" width="480" height="640" alt="" loading="lazy" decoding="async">
+     <span class="a30-txt"><b>{t('p3.n.' + w.k)}</b><span class="a30-ds">{t('p3.d.' + w.k)}</span><span class={`a30-st mono${up ? ' up' : ''}`}>{up ? t('a30.up') : t('a30.ready')}</span></span>
+   </a></li>; })}</ul>
+  </div>; })}
+  <button type="button" class="a30-more mono" id="a30more" aria-expanded="false" aria-controls="allw">{t('a30.all')}</button>
+ </section>
+ <div id="allw" hidden>
+ <h2 class="a30-h a30-h2">{t('a30.other')}</h2>
+ <div class="tools" role="search">
+  <label class="srch"><span class="skip">{t('wl.search')}</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><input id="q" type="search" placeholder={ta('wl.search')} autocomplete="off" spellcheck="false"></label>
+  <div class="chips2" id="cats" role="group" aria-label={ta('wl.cats')} set:html="{{WORLD_CHIPS}}"></div>
+  <div class="chips2 st" id="sts" role="group" aria-label={ta('wl.status')}>
+   <button type="button" data-s="" aria-pressed="true">{t('wl.filter.all')}</button><button type="button" data-s="live" aria-pressed="false">{t('wl.st.live')}</button><button type="button" data-s="planned" aria-pressed="false">{t('wl.st.planned')}</button>
+  </div>
+  <p class="mono cnt" id="wc" role="status" aria-live="polite"></p>
+ </div>
+ <div id="atlas" set:html="{{WORLD_LIST}}"></div>
+ <p class="none" id="none" hidden>{t('wl.none')}</p>
+ </div>
+ <aside class="honest">
+  <h2 class="mono">{t('wl.how.h')}</h2>
+  <p>{t('wl.how.t')}</p>
+ </aside>
+</main>
+<Foot links={[[u('home'), 'nav.home'], [u('galaxy'), 'x.74'], [u('founder'), 'nav.founder']]} />
+<script>import '../../scripts/worlds';</script>
+</Base>

@@ -1,0 +1,83 @@
+{
+ "dir": ".",
+ "uvpos": "uvpos.npz",
+ "textures": [
+  "base.jpg",
+  "occ.jpg"
+ ],
+ "axes": {
+  "len": 0,
+  "side": 1,
+  "up": 2
+ },
+ "out": "zones",
+ "smooth": 3,
+ "zones": [
+  {
+   "id": "sole",
+   "label": "Sole & heel",
+   "rules": [
+    {
+     "up": [
+      0,
+      0.05
+     ]
+    },
+    {
+     "facing": [
+      2,
+      -1,
+      0.5
+     ],
+     "up": [
+      0,
+      0.3
+     ]
+    },
+    {
+     "len": [
+      0,
+      0.25
+     ],
+     "up": [
+      0,
+      0.1
+     ]
+    }
+   ]
+  },
+  {
+   "id": "lining",
+   "label": "Lining",
+   "rules": [
+    {
+     "tex": [
+      1,
+      0,
+      0,
+      0.6
+     ]
+    }
+   ]
+  },
+  {
+   "id": "shaft",
+   "label": "Quilted shaft",
+   "rules": [
+    {
+     "up": [
+      0.33,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": "foot",
+   "label": "Foot",
+   "rules": [
+    {}
+   ]
+  }
+ ]
+}

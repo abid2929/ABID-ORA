@@ -1,0 +1,57 @@
+---
+import Base from '../../layouts/Base.astro';
+import Bar from '../../components/Bar.astro';
+import Foot from '../../components/Foot.astro';
+import '../../styles/studio.css';
+import { t, ta, u } from '../../lib/t';
+import { FAMILIES, TYPE } from '../../data/themes';
+const links: [string, string][] = [[u('home'), 'nav.home'], [u('worlds'), 'nav.worlds'], [u('cursors'), 'nav.cursors'], [u('studio'), 'nav.studio']];
+---
+<Base title="th.meta.title" desc="th.meta.desc" bodyClass="ustudio themes">
+<div id="cur" aria-hidden="true"><span></span></div>
+<div id="grain" aria-hidden="true"></div>
+<Bar links={links} />
+<main id="main" class="us">
+ <header class="ush">
+  <p class="mono eb">{t('th.eyebrow')}</p>
+  <h1 set:html={t('th.title')}></h1>
+  <p class="lead">{t('th.lead')}</p>
+ </header>
+ <section class="spec" id="spec" aria-labelledby="spec-h" aria-live="polite">
+  <div class="spec-l">
+   <p class="mono lbl">{t('th.current')}</p>
+   <h2 id="spec-h"><span id="sn">Abidora Night</span></h2>
+   <p class="mono" id="sf"></p>
+   <div class="sw" id="sw" aria-hidden="true"></div>
+  </div>
+  <div class="spec-r">
+   <p class="disp">{t('th.spec.h')}</p>
+   <p>{t('th.spec.p')}</p>
+   <div class="btnrow"><span class="b1">{t('th.btn')}</span><span class="b2">{t('th.btn2')}</span><span class="mono tagx">{t('th.type')}: <b id="stp"></b></span></div>
+  </div>
+ </section>
+ <div class="tools us-tools" role="search">
+  <label class="srch"><span class="skip">{t('th.search')}</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><input id="q" type="search" placeholder={ta('th.search')} autocomplete="off" spellcheck="false"></label>
+  <div class="chips2" id="fams" role="group" aria-label={ta('th.families')}>
+   <button type="button" data-f="" aria-pressed="true">{t('th.all')}</button>
+   {FAMILIES.map(([id]) => <button type="button" data-f={id} aria-pressed="false">{t(`th.fam.${id}`)}</button>)}
+  </div>
+  <div class="row2">
+   <div class="chips2" id="tones" role="group" aria-label={ta('th.tone')}>
+    <button type="button" data-t="" aria-pressed="true">{t('th.all')}</button><button type="button" data-t="d" aria-pressed="false">{t('th.dark')}</button><button type="button" data-t="l" aria-pressed="false">{t('th.light')}</button>
+   </div>
+   <label class="sel mono"><span>{t('th.type')}</span>
+    <select id="tp"><option value="auto">{t('th.type.auto')}</option>{Object.entries(TYPE).map(([k, v]) => <option value={k}>{v.n}</option>)}</select>
+   </label>
+   <button type="button" class="mono pill2" id="rnd">{t('th.random')}</button>
+   <button type="button" class="mono pill2" id="rst">{t('th.reset')}</button>
+   <p class="mono cnt" id="cnt" role="status" aria-live="polite"></p>
+  </div>
+ </div>
+ <ul class="tgrid" id="grid" aria-label={ta('th.list')}></ul>
+ <p class="none" id="none" hidden>{t('th.none')}</p>
+ <aside class="honest"><h2 class="mono">{t('th.how.h')}</h2><p>{t('th.note')}</p><a class="cta2" href={u('cursors')}>{t('th.next')}</a></aside>
+</main>
+<Foot links={[[u('home'), 'nav.home'], [u('worlds'), 'nav.worlds']]} />
+<script>import '../../scripts/themes-page';</script>
+</Base>

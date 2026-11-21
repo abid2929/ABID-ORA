@@ -1,0 +1,51 @@
+---
+import Base from '../../layouts/Base.astro';
+import Bar from '../../components/Bar.astro';
+import Foot from '../../components/Foot.astro';
+import '../../styles/galaxy.css';
+import { t, ta, u, ROOT } from '../../lib/t';
+const links: [string, string][] = [[u('worlds'), 'nav.worlds'], ['#about', 'gx.about.h'], [u('home'), 'nav.home']];
+const shapes: [string, string][] = [['spiral', 'Sc'], ['barred', 'SBb'], ['elliptical', 'E3'], ['irregular', 'Irr']];
+---
+<Base title="gx.meta.title" desc="gx.meta.desc" bodyClass="galaxy">
+<div id="cur" aria-hidden="true"><span></span></div>
+<Bar links={links} />
+<main id="main">
+ <section class="gx" aria-labelledby="gx-h">
+  <div class="stage" id="stage">
+   <canvas id="gxc" tabindex="0" role="img" aria-label={ta('gx.s.spiral')}></canvas>
+   <img id="gxf" class="fb" src={`${ROOT}assets/home/cosmos-nebula.jpg`} alt="" hidden>
+   <div class="ld mono" id="gxl" role="status"><svg class="ora" viewBox="0 0 100 100" aria-hidden="true"><circle class="rg" cx="50" cy="50" r="38"/><g class="od"><circle cx="77" cy="23" r="9"/></g></svg><span>{t('gx.loading')}</span></div>
+  </div>
+  <div class="hud">
+   <div class="gtl">
+    <p class="mono eb">{t('gx.eyebrow')}</p>
+    <h1 id="gx-h">{t('x.74')}</h1>
+    <p class="lead">{t('gx.lead')}</p>
+    <p class="msg" id="gxm" role="alert" hidden></p>
+   </div>
+   <div class="pnl" aria-label={ta('gx.shape')} role="group">
+    <p class="mono pl">{t('gx.shape')}</p>
+    <div class="shp" id="shp">{shapes.map(([k, c], i) => <button type="button" data-s={k} aria-pressed={i === 0 ? 'true' : 'false'}><span class="mono c">{c}</span><span class="nm">{t(`gx.s.${k}`)}</span></button>)}</div>
+    <p class="desc" id="gxd" aria-live="polite">{t('gx.d.spiral')}</p>
+    <div class="row" id="armsRow"><span class="mono">{t('gx.arms')}</span><div class="stp"><button type="button" id="am" aria-label="−">−</button><output id="av" class="mono">2</output><button type="button" id="ap" aria-label="+">+</button></div></div>
+    <label class="row"><span class="mono">{t('gx.spin')}</span><input type="range" id="spin" min="0" max="2" step="0.05" value="1"></label>
+    <div class="btns"><button type="button" class="mono pill2" id="fly">{t('gx.fly')}</button><button type="button" class="mono pill2" id="rst">{t('gx.reset')}</button><button type="button" class="mono pill2" id="pp" aria-pressed="false">{t('js.gx.pause')}</button></div>
+    <p class="mono cnt" id="gxn"></p>
+   </div>
+   <p class="hint mono">{t('gx.hint')}<span class="kb"> · {t('gx.hint.kb')}</span></p>
+  </div>
+ </section>
+ <section class="gxa" id="about" aria-labelledby="gxa-h">
+  <h2 class="mono" id="gxa-h">{t('gx.about.h')}</h2>
+  <div>
+   <p class="big2">{t('gx.fact')}</p>
+   <p>{t('gx.about.p1')}</p><p>{t('gx.about.p2')}</p><p>{t('gx.about.p3')}</p>
+   <p class="note mono">{t('gx.note')}</p>
+   <a class="cta2" href={u('worlds')}>{t('gx.back')}</a>
+  </div>
+ </section>
+</main>
+<Foot links={[[u('home'), 'nav.home'], [u('worlds'), 'nav.worlds'], [u('founder'), 'nav.founder']]} />
+<script>import '../../scripts/galaxy-page';</script>
+</Base>

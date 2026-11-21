@@ -1,0 +1,697 @@
+{
+ "_note": "Abidora experience catalogue. Names live in i18n (x.<id>), categories in cat.<id>. status: live | planned. page: renderer page key when live.",
+ "categories": [
+  {
+   "id": "A",
+   "color": "#e9a6b8"
+  },
+  {
+   "id": "B",
+   "color": "#ff7a45"
+  },
+  {
+   "id": "C",
+   "color": "#d9c7a7"
+  },
+  {
+   "id": "D",
+   "color": "#7cc49a"
+  },
+  {
+   "id": "E",
+   "color": "#8ab8ff"
+  },
+  {
+   "id": "F",
+   "color": "#f2c14e"
+  },
+  {
+   "id": "G",
+   "color": "#9b8cff"
+  },
+  {
+   "id": "H",
+   "color": "#e0905c"
+  },
+  {
+   "id": "I",
+   "color": "#5fd4d0"
+  },
+  {
+   "id": "J",
+   "color": "#f08ad6"
+  },
+  {
+   "id": "K",
+   "color": "#c4f06a"
+  },
+  {
+   "id": "X",
+   "color": "#e8b46a"
+  }
+ ],
+ "items": [
+  {
+   "id": 1,
+   "cat": "A",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 2,
+   "cat": "A",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 3,
+   "cat": "A",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 4,
+   "cat": "A",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 5,
+   "cat": "A",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 6,
+   "cat": "A",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 7,
+   "cat": "A",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 8,
+   "cat": "A",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 9,
+   "cat": "A",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 10,
+   "cat": "A",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 11,
+   "cat": "B",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 12,
+   "cat": "B",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 13,
+   "cat": "B",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 14,
+   "cat": "B",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 15,
+   "cat": "B",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 16,
+   "cat": "B",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 17,
+   "cat": "B",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 18,
+   "cat": "B",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 19,
+   "cat": "C",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 20,
+   "cat": "C",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 21,
+   "cat": "C",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 22,
+   "cat": "C",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 23,
+   "cat": "C",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 24,
+   "cat": "C",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 25,
+   "cat": "C",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 26,
+   "cat": "C",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 27,
+   "cat": "D",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 28,
+   "cat": "D",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 29,
+   "cat": "D",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 30,
+   "cat": "D",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 31,
+   "cat": "D",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 32,
+   "cat": "D",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 33,
+   "cat": "D",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 34,
+   "cat": "D",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 35,
+   "cat": "D",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 36,
+   "cat": "E",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 37,
+   "cat": "E",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 38,
+   "cat": "E",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 39,
+   "cat": "E",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 40,
+   "cat": "E",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 41,
+   "cat": "E",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 42,
+   "cat": "E",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 43,
+   "cat": "E",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 44,
+   "cat": "E",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 45,
+   "cat": "F",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 46,
+   "cat": "F",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 47,
+   "cat": "F",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 48,
+   "cat": "F",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 49,
+   "cat": "F",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 50,
+   "cat": "F",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 51,
+   "cat": "F",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 52,
+   "cat": "F",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 53,
+   "cat": "F",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 54,
+   "cat": "F",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 55,
+   "cat": "G",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 56,
+   "cat": "G",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 57,
+   "cat": "G",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 58,
+   "cat": "G",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 59,
+   "cat": "G",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 60,
+   "cat": "G",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 61,
+   "cat": "G",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 62,
+   "cat": "G",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 63,
+   "cat": "G",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 64,
+   "cat": "G",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 65,
+   "cat": "H",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 66,
+   "cat": "H",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 67,
+   "cat": "H",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 68,
+   "cat": "H",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 69,
+   "cat": "H",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 70,
+   "cat": "H",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 71,
+   "cat": "H",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 72,
+   "cat": "H",
+   "status": "planned"
+  },
+  {
+   "id": 73,
+   "cat": "I",
+   "status": "planned"
+  },
+  {
+   "id": 74,
+   "cat": "I",
+   "status": "live",
+   "page": "galaxy"
+  },
+  {
+   "id": 75,
+   "cat": "I",
+   "status": "planned"
+  },
+  {
+   "id": 76,
+   "cat": "I",
+   "status": "planned"
+  },
+  {
+   "id": 77,
+   "cat": "I",
+   "status": "planned"
+  },
+  {
+   "id": 78,
+   "cat": "I",
+   "status": "planned"
+  },
+  {
+   "id": 79,
+   "cat": "I",
+   "status": "planned"
+  },
+  {
+   "id": 80,
+   "cat": "I",
+   "status": "planned"
+  },
+  {
+   "id": 81,
+   "cat": "I",
+   "status": "planned"
+  },
+  {
+   "id": 82,
+   "cat": "I",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 83,
+   "cat": "J",
+   "status": "planned"
+  },
+  {
+   "id": 84,
+   "cat": "J",
+   "status": "planned"
+  },
+  {
+   "id": 85,
+   "cat": "J",
+   "status": "planned"
+  },
+  {
+   "id": 86,
+   "cat": "J",
+   "status": "planned"
+  },
+  {
+   "id": 87,
+   "cat": "J",
+   "status": "planned"
+  },
+  {
+   "id": 88,
+   "cat": "J",
+   "status": "planned"
+  },
+  {
+   "id": 89,
+   "cat": "J",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 90,
+   "cat": "J",
+   "status": "planned"
+  },
+  {
+   "id": 91,
+   "cat": "K",
+   "status": "planned"
+  },
+  {
+   "id": 92,
+   "cat": "K",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 93,
+   "cat": "K",
+   "status": "planned"
+  },
+  {
+   "id": 94,
+   "cat": "K",
+   "status": "planned"
+  },
+  {
+   "id": 95,
+   "cat": "K",
+   "status": "planned"
+  },
+  {
+   "id": 96,
+   "cat": "K",
+   "status": "planned"
+  },
+  {
+   "id": 97,
+   "cat": "K",
+   "status": "planned"
+  },
+  {
+   "id": 98,
+   "cat": "K",
+   "status": "planned"
+  },
+  {
+   "id": 99,
+   "cat": "K",
+   "status": "live",
+   "page": "world"
+  },
+  {
+   "id": 100,
+   "cat": "K",
+   "status": "planned"
+  },
+  {
+   "id": 101,
+   "cat": "X",
+   "status": "planned"
+  },
+  {
+   "id": 102,
+   "cat": "X",
+   "status": "planned"
+  },
+  {
+   "id": 103,
+   "cat": "X",
+   "status": "planned"
+  },
+  {
+   "id": 104,
+   "cat": "X",
+   "status": "planned"
+  },
+  {
+   "id": 105,
+   "cat": "X",
+   "status": "planned"
+  },
+  {
+   "id": 106,
+   "cat": "X",
+   "status": "planned"
+  },
+  {
+   "id": 107,
+   "cat": "X",
+   "status": "planned"
+  },
+  {
+   "id": 108,
+   "cat": "X",
+   "status": "planned"
+  },
+  {
+   "id": 109,
+   "cat": "X",
+   "status": "planned"
+  },
+  {
+   "id": 110,
+   "cat": "X",
+   "status": "planned"
+  },
+  {
+   "id": 111,
+   "cat": "X",
+   "status": "planned"
+  },
+  {
+   "id": 112,
+   "cat": "X",
+   "status": "planned"
+  },
+  {
+   "id": 113,
+   "cat": "D",
+   "status": "live",
+   "page": "world"
+  }
+ ]
+}

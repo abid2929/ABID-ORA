@@ -1,0 +1,11 @@
+---
+import { t, ta, u } from '../lib/t';
+interface Props { links: [string, string][]; big?: boolean }
+const { links, big = false } = Astro.props;
+---
+<footer id={big ? undefined : 'foot'}>
+ <slot />
+ {big && <div class="big" aria-hidden="true"><span class="brand-w">{'{brand}'}</span></div>}
+ <nav class="fnav mono" aria-label={ta('a.footer')}>{links.map(([h, k]) => <a href={h}>{t(k)}</a>)}<a href={u('credits')}>{t('ft.credits')}</a></nav>
+ <div class="fl mono"><span>© <span class="yr"></span> {t('ft.owner')}</span><span>{t('ft.photo')} · <a href={u('credits')} style="text-decoration:underline">{t('ft.credits')}</a></span><a href="#main">{t('ft.top')}</a></div>
+</footer>

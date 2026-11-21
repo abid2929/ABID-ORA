@@ -1,0 +1,81 @@
+{
+ "dir": ".",
+ "uvpos": "uvpos.npz",
+ "textures": [
+  "base.jpg",
+  "occ.jpg"
+ ],
+ "axes": {
+  "len": 0,
+  "side": 1,
+  "up": 2
+ },
+ "out": "zones",
+ "smooth": 3,
+ "zones": [
+  {
+   "id": "sole",
+   "label": "Sole",
+   "rules": [
+    {
+     "up": [
+      0,
+      0.13
+     ]
+    },
+    {
+     "facing": [
+      2,
+      -1,
+      0.5
+     ],
+     "up": [
+      0,
+      0.3
+     ]
+    }
+   ]
+  },
+  {
+   "id": "lining",
+   "label": "Lining & cuff",
+   "rules": [
+    {
+     "tex": [
+      1,
+      0,
+      0,
+      0.5
+     ]
+    }
+   ]
+  },
+  {
+   "id": "trim",
+   "label": "White trim",
+   "rules": [
+    {
+     "val": [
+      0.6,
+      1
+     ],
+     "sat": [
+      0,
+      0.15
+     ],
+     "up": [
+      0.13,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": "shell",
+   "label": "Padded shell",
+   "rules": [
+    {}
+   ]
+  }
+ ]
+}

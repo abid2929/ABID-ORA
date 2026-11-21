@@ -1,0 +1,69 @@
+/* Abidora game worlds (12 Racing, 82 Isle of Abidora, 99 Prism Lab, 36 Starfall Run, 41 Demolition Lab).
+   The host .gm has a transform, so the game's position:fixed overlays are placed inside the stage, not the page.
+   On phones the stage can take the whole screen (.gm.full). Classes: gm-, gk- (kit), rc-, ex-, pz-, sp-, sm- (games). */
+.gm{--sig:#e8b46a;--mut:#9a9387;--glass:rgba(12,12,16,.62);--line:rgba(255,255,255,.13);--bone:#ece6dc;
+  position:relative;height:min(84svh,820px);min-height:540px;transform:translateZ(0);overflow:hidden;background:#08080a;color:var(--bone);
+  font-family:var(--sans,'Inter Tight',sans-serif);-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;contain:layout paint}
+.gm>canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;outline:none}
+.gm-ui{position:absolute;inset:0;pointer-events:none;z-index:10}
+.gm-ui>*{pointer-events:auto}
+.gm .mono,.gm .gk-kick,.gm .gk-hud,.gm .gk-legend b{font-family:var(--mono,'JetBrains Mono',monospace)}
+.gm.full{position:fixed;inset:0;height:100dvh;min-height:0;z-index:2000;border-radius:0}
+html.gm-lock,html.gm-lock body{overflow:hidden;overscroll-behavior:none}
+.gm-x{position:absolute;left:calc(env(safe-area-inset-left,0px) + 12px);top:calc(env(safe-area-inset-top,0px) + 10px);z-index:40;height:40px;padding:0 14px 0 10px;border-radius:999px;border:1px solid var(--line);background:var(--glass);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:var(--bone);display:flex;align-items:center;gap:6px;font:500 10.5px var(--mono,'JetBrains Mono',monospace);letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
+.gm-x svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.gm-load{position:absolute;inset:0;display:grid;place-items:center;font:400 11px var(--mono,'JetBrains Mono',monospace);letter-spacing:.24em;text-transform:uppercase;color:#8d877c;z-index:50;background:#08080a;transition:opacity .6s}
+.gm-load.done{opacity:0;pointer-events:none}
+.gm-tabs{display:flex;gap:4px;padding:4px;margin:0 0 14px;border-radius:999px;border:1px solid var(--line,rgba(255,255,255,.13));width:max-content;max-width:100%;overflow-x:auto;scrollbar-width:none}
+.gm-tabs button{min-height:40px;padding:0 16px;border-radius:999px;border:0;background:transparent;color:inherit;font:500 11px var(--mono,'JetBrains Mono',monospace);letter-spacing:.1em;text-transform:uppercase;cursor:pointer;white-space:nowrap}
+.gm-tabs button[aria-selected=true]{background:var(--bone,#ece6dc);color:#111}
+.gm-fail{padding:40px 24px;text-align:center;color:#c9c2b6}
+/* ---- kit UI ---- */
+.gm .gk-top{position:fixed;right:calc(env(safe-area-inset-right,0px) + 12px);top:calc(env(safe-area-inset-top,0px) + 10px);display:flex;gap:6px;z-index:40}
+.gm .gk-ic{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:var(--bone);display:grid;place-items:center;cursor:pointer;padding:0}
+.gm .gk-ic svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.gm .gk-card-wrap{position:fixed;inset:0;display:grid;place-items:center;padding:20px;z-index:30;background:radial-gradient(ellipse at 50% 60%,rgba(0,0,0,.25),rgba(0,0,0,.6));animation:gkin .45s ease both}
+.gm .gk-card-wrap.out{animation:gkout .35s ease both}
+@keyframes gkin{from{opacity:0}to{opacity:1}}@keyframes gkout{to{opacity:0}}
+.gm .gk-card{width:min(460px,100%);max-height:100%;overflow:auto;padding:28px 26px 22px;border-radius:22px;background:linear-gradient(180deg,rgba(24,23,26,.78),rgba(10,10,12,.86));border:1px solid var(--line);
+  backdrop-filter:blur(22px) saturate(1.4);-webkit-backdrop-filter:blur(22px) saturate(1.4);box-shadow:0 30px 80px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.08);animation:gkup .55s cubic-bezier(.2,.8,.2,1) both}
+@keyframes gkup{from{transform:translateY(18px) scale(.98);opacity:0}}
+.gm .gk-kick{margin:0 0 10px;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--sig)}
+.gm .gk-card h1,.gm .gk-card .gk-h{margin:0 0 10px;font:400 clamp(34px,7vw,46px)/1 var(--serif,'Instrument Serif',serif);letter-spacing:-.01em}
+.gm .gk-body{color:#c9c2b6;font-size:14.5px;line-height:1.55}
+.gm .gk-body p{margin:0 0 12px}
+.gm .gk-legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin:14px 0 4px;font-size:12.5px}
+.gm .gk-legend div{display:flex;align-items:center;gap:7px}.gm .gk-legend b{font-weight:500;font-size:10.5px;color:var(--bone);padding:3px 7px;border:1px solid var(--line);border-radius:6px;white-space:nowrap}
+.gm .gk-legend span{color:#aea79b}
+@media (min-width:900px){.gm .gk-card-wrap.side{place-items:center start;padding-left:max(40px,6vw);background:linear-gradient(90deg,rgba(0,0,0,.55),rgba(0,0,0,0) 60%)}}
+.gm .gk-row{display:flex;gap:8px;margin-top:20px;flex-wrap:wrap;position:sticky;bottom:-22px;padding:10px 0 22px;margin-bottom:-22px;background:linear-gradient(180deg,rgba(14,14,16,0),rgba(14,14,16,.95) 30%)}
+.gm .gk-cbtn{flex:1 1 auto;min-height:48px;padding:0 18px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--bone);font:600 14px var(--sans,'Inter Tight',sans-serif);cursor:pointer;letter-spacing:.01em}
+.gm .gk-cbtn.pri{background:var(--bone);color:#111;border-color:transparent}
+.gm .gk-cbtn:hover{filter:brightness(1.08)}.gm .gk-cbtn:focus-visible,.gm .gk-btn:focus-visible,.gm .gk-ic:focus-visible{outline:2px solid var(--sig);outline-offset:2px}
+.gm .gk-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:6px 0 0}
+.gm .gk-stats div{padding:12px 10px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.03)}
+.gm .gk-stats small{display:block;font:500 9.5px var(--mono,'JetBrains Mono',monospace);letter-spacing:.16em;text-transform:uppercase;color:var(--mut);margin-bottom:6px}
+.gm .gk-stats b{font:400 24px var(--serif,'Instrument Serif',serif)}
+.gm .gk-hud{position:fixed;pointer-events:none!important;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--bone);text-shadow:0 1px 10px rgba(0,0,0,.6)}
+.gm .gk-toast{position:fixed;left:50%;top:22%;transform:translate(-50%,10px);opacity:0;transition:.4s;padding:10px 18px;border-radius:999px;background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--line);font:500 12px var(--mono,'JetBrains Mono',monospace);letter-spacing:.14em;text-transform:uppercase;pointer-events:none!important;white-space:nowrap;z-index:35}
+.gm .gk-toast.in{opacity:1;transform:translate(-50%,0)}
+/* touch controls */
+.gm .gk-zone{position:fixed;bottom:0;width:46%;height:52%;touch-action:none;z-index:20}
+.gm .gk-zone.left{left:0}.gm .gk-zone.right{right:0}
+.gm .gk-stick{position:absolute;left:84px;top:calc(100% - 110px - env(safe-area-inset-bottom,0px));width:112px;height:112px;margin:-56px 0 0 -56px;border-radius:50%;border:1.5px solid rgba(255,255,255,.28);background:radial-gradient(circle,rgba(255,255,255,.08),rgba(255,255,255,.02));backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:.7;transition:opacity .2s}
+.gm .gk-stick.on{opacity:1}
+.gm .gk-knob{position:absolute;left:50%;top:50%;width:50px;height:50px;margin:-25px 0 0 -25px;border-radius:50%;background:rgba(236,230,220,.9);box-shadow:0 4px 18px rgba(0,0,0,.4)}
+.gm .gk-btn{position:fixed;z-index:21;width:72px;height:72px;border-radius:50%;border:1.5px solid rgba(255,255,255,.3);background:rgba(18,18,22,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--bone);font:600 11px var(--mono,'JetBrains Mono',monospace);letter-spacing:.08em;text-transform:uppercase;touch-action:none;display:grid;place-items:center;cursor:pointer;padding:0}
+.gm .gk-btn.on{background:rgba(232,180,106,.85);color:#111;border-color:transparent;transform:scale(.94)}
+.gm .gk-btn svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@media (pointer:fine){.gm .gk-zone,.gm .gk-btn.touch{display:none}}
+
+.gm [hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){.gm .gk-card-wrap,.gm .gk-card{animation:none}}
+/* tabs + panes inside the world stage */
+.gm-wrap{padding:12px 12px 0}
+.gm-wrap>.gm-tabs{margin:0 0 12px}
+.gm-wrap>.gm,.gm-wrap>.gm-pane{margin:0 -12px}
+.gm-pane[hidden],.gm[hidden]{display:none!important}
+.gm[data-rtl] .gk-card,.gm[data-rtl] .gk-toast,.gm[data-rtl] .gk-found{direction:rtl}

@@ -1,0 +1,84 @@
+---
+import Base from '../../layouts/Base.astro';
+import Bar from '../../components/Bar.astro';
+import Foot from '../../components/Foot.astro';
+import Portrait from '../../components/Portrait.astro';
+import '../../styles/founder.css';
+import { t, u } from '../../lib/t';
+const links: [string, string][] = [['#vision', 'fd.nav.vision'], ['#technology', 'fd.nav.tech'], ['#projects', 'fd.nav.projects'], ['#future', 'fd.nav.future'], [u('worlds'), 'nav.worlds']];
+const G: Record<string, number> = { ai: 10, web: 9, cr: 9, pr: 8, fu: 8 };
+const range = (n: number) => Array.from({ length: n }, (_, i) => i + 1);
+---
+<Base title="fd.meta.title" desc="fd.meta.desc" bodyClass="founder">
+<Fragment slot="head"><Fragment set:html={'<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"{{json:fd.ld.name}}","jobTitle":"{{json:fd.title}}","worksFor":{"@type":"Organization","name":"{{json:BRAND}}"}}</script>'} /></Fragment>
+<div id="cur" aria-hidden="true"><span></span></div>
+<Bar links={links} />
+<main id="main" class="fd">
+ <header class="fh fx">
+  <div class="fx-light" aria-hidden="true"></div>
+  <svg class="ring" viewBox="0 0 100 100" aria-hidden="true"><circle class="rg" cx="50" cy="50" r="46"/><g class="od"><circle cx="82.5" cy="17.5" r="1.6"/></g></svg>
+  <h1 class="fx-name" aria-label={'{owner}'}><span aria-hidden="true">{'{owner1}'}</span> <span aria-hidden="true">{'{owner2}'}</span></h1>
+  <figure class="fh-pic fx-pic"><Portrait eager sizes="(max-width:800px) 100vw, 62vw" /></figure>
+  <div class="fh-txt">
+   <span class="mono eb">{t('fd.eyebrow')}</span>
+   <p class="role">{t('fd.title')}</p>
+   <p class="id mono"><span>{t('fd.id1')}</span><span>{t('fd.id2')}</span></p>
+   <p class="fh-tag">{t('fd.tagline')}</p>
+  </div>
+ </header>
+ <section class="fs" id="vision" aria-labelledby="h-s1">
+  <h2 class="mono" id="h-s1"><span>01</span>{t('fd.s1')}</h2>
+  <div>
+   <p class="lead">{t('fd.about.lead')}</p>
+   <div class="body"><p>{t('fd.about.p1')}</p><p>{t('fd.about.p3')}</p></div>
+   <figure class="ph">
+    <span class="mono">{t('fd.ph.label')}</span>
+    <blockquote><p class="q">{t('fd.ph.1')}</p><p>{t('fd.ph.2')}</p><p>{t('fd.ph.3')}</p></blockquote>
+    <figcaption class="mono">{'{owner}'}</figcaption>
+   </figure>
+   <h3 class="mono sub">{t('fd.vs.label')}</h3>
+   <ol class="vs">{range(6).map((n) => <li><span>{String(n).padStart(2, '0')}</span>{t(`fd.vs.${n}`)}</li>)}</ol>
+  </div>
+ </section>
+ <section class="fs" id="technology" aria-labelledby="h-s2">
+  <h2 class="mono" id="h-s2"><span>02</span>{t('fd.s2')}</h2>
+  <div>
+   <p class="fnote2"><span class="dot" aria-hidden="true"></span>{t('fd.s2.note')}</p>
+   {['ai', 'web'].map((g) => <div class="ig"><h3>{t(`in.g.${g}`)}</h3><ul class="it">{range(G[g]).map((i) => <li>{t(`in.${g}.${i}`)}</li>)}</ul></div>)}
+  </div>
+ </section>
+ <section class="fs" id="creative" aria-labelledby="h-s3">
+  <h2 class="mono" id="h-s3"><span>03</span>{t('fd.s3')}</h2>
+  <div>
+   <p class="fnote2"><span class="dot" aria-hidden="true"></span>{t('fd.s3.note')}</p>
+   {['cr', 'pr'].map((g) => <div class="ig"><h3>{t(`in.g.${g}`)}</h3><ul class="it">{range(G[g]).map((i) => <li>{t(`in.${g}.${i}`)}</li>)}</ul></div>)}
+   <div class="ig"><h3>{t('fd.focus')}</h3><div set:html="{{SKILLS}}"></div></div>
+  </div>
+ </section>
+ <section class="fs" id="projects" aria-labelledby="h-s4">
+  <h2 class="mono" id="h-s4"><span>04</span>{t('fd.s4')}</h2>
+  <div>
+  <p class="fnote2 real"><span class="dot" aria-hidden="true"></span>{t('fd.s4.note')}</p>
+  <ol class="pj">
+   <li><span class="n mono"><span>01</span><span class="st">{t('fd.pj.main')}</span></span><h3>{'{brand}'}</h3><p>{t('fd.pj.1')}</p><a href={u('home')}>{t('fd.pj.explore')}</a></li>
+   <li><span class="n mono"><span>02</span></span><h3>Boostnix Media</h3><p>{t('fd.pj.2')}</p><a href="https://boostnixmedia.com/" target="_blank" rel="noopener">boostnixmedia.com ↗</a></li>
+   <li><span class="n mono"><span>03</span></span><h3>{t('fd.pj.3.name')}</h3><p>{t('fd.pj.3')}</p><a href="https://bashundharakaziofficebd.com/" target="_blank" rel="noopener">bashundharakaziofficebd.com ↗</a></li>
+   <li><span class="n mono"><span>04</span><span class="st">{t('fd.pj.concept')}</span></span><h3>FitAI</h3><p>{t('fd.pj.4')}</p></li>
+  </ol>
+  </div>
+ </section>
+ <section class="fs" id="future" aria-labelledby="h-s5">
+  <h2 class="mono" id="h-s5"><span>05</span>{t('fd.s5')}</h2>
+  <div>
+   <p class="fnote2"><span class="dot" aria-hidden="true"></span>{t('fd.s5.note')}</p>
+   <div class="ig"><h3>{t('in.g.fu')}</h3><ul class="it">{range(G.fu).map((i) => <li>{t(`in.fu.${i}`)}</li>)}</ul></div>
+  </div>
+ </section>
+ <section class="tag2" aria-label="{{attr:fd.tag.label}}">
+  <p set:html={t('fd.tag')}></p>
+  <a class="cta2" href={`${u('home')}#contact`}>{t('fd.contact')}</a>
+ </section>
+</main>
+<Foot links={[[u('home'), 'nav.home'], ['#vision', 'fd.nav.vision'], ['#technology', 'fd.nav.tech'], ['#projects', 'fd.nav.projects'], ['#future', 'fd.nav.future'], [u('worlds'), 'nav.worlds']]} />
+<script>import '../../scripts/common';import { cursor } from '../../scripts/studio-core';import { parallax } from '../../scripts/portrait';cursor();parallax(.05);import { chapters } from '../../scripts/chapters';chapters();</script>
+</Base>

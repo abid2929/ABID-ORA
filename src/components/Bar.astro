@@ -1,0 +1,46 @@
+---
+/* Top bar + mobile menu. Links are [href, translation key]. */
+import { t, ta, u } from '../lib/t';
+import '../styles/tabbar.css';
+interface Props { links: [string, string][]; contact?: string; sound?: boolean; ai?: boolean }
+const { links: base, contact = `${u('home')}#contact`, sound = false, ai = true } = Astro.props;
+/* every page leads to Abidora AI: a link in the bar and menu, and a round button in the corner */
+const links: [string, string][] = ai ? [...base, [u('ai'), 'nav.ai']] : base;
+---
+<div class="barbg" aria-hidden="true"></div>
+<script is:inline>(()=>{const r=document.documentElement;let o=0;const c=()=>{const v=scrollY>40?1:0;if(v!==o){o=v;r.classList.toggle("scd",!!v)}};addEventListener("scroll",c,{passive:true});c()})()</script>
+<div class="bar">
+ <a href={u('home')} class="wm" aria-label={ta('a.home')}><span class="brand-w">{'{brand}'}</span></a>
+ <nav class="mid" aria-label={ta('a.sections')}>{links.map(([h, k]) => <a class="mono" href={h}>{t(k)}</a>)}</nav>
+ <div class="r"><Fragment set:html="{{LANGMENU}}" /><button class="mono hide-s qbtn" id="qbtn" type="button" data-l={t('q.label')} data-auto={t('q.auto')} data-high={t('q.high')} data-low={t('q.low')}>{t('q.label')}: {t('q.auto')}</button>{sound && <button class="mono hide-s" id="snd" type="button" aria-pressed="false">{t('js.sound.off')}</button>}<a class="mono hide-s cta" href={contact}>{t('nav.contact')}</a><button class="mono mnb" id="mnb" type="button" aria-expanded="false" aria-controls="mnu">{t('nav.menu')}</button></div>
+</div>
+<a class="fback mono" id="fback" href={u('home')} hidden><span aria-hidden="true">←</span> <span>{t('wo.back')}</span></a>
+<script is:inline>(()=>{const go=()=>{const f=document.getElementById("fback"),B=document.body,c=B?B.className:"";if(!f||/\bhome\b/.test(c)){f&&f.remove();return}
+const W=document.querySelector("[data-wlist]");if(/\bwworld\b/.test(c)&&W)f.href=W.getAttribute("href");
+let same=false;try{same=!!document.referrer&&new URL(document.referrer).origin===location.origin&&new URL(document.referrer).href!==location.href}catch(e){}
+f.addEventListener("click",e=>{if(same&&history.length>1){e.preventDefault();history.back()}});
+if(document.getElementById("wback")){let q=0;const chk=()=>{q=0;const h=document.getElementById("wback"),r=h&&h.getBoundingClientRect();f.hidden=!!(r&&r.width&&r.bottom>0&&r.top<innerHeight)};addEventListener("scroll",()=>{q||(q=requestAnimationFrame(chk))},{passive:true});addEventListener("resize",chk);setInterval(chk,1000);chk()}else f.hidden=false};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",go):go()})()</script>
+<div id="mnu" class="mnu" hidden>
+ <nav aria-label={ta('a.sections')}>
+  <ol>{links.map(([h, k], i) => <li><a href={h}><span class="mono">{String(i + 1).padStart(2, '0')}</span>{t(k)}</a></li>)}
+   <li><a href={contact}><span class="mono">{String(links.length + 1).padStart(2, '0')}</span>{t('nav.contact')}</a></li></ol>
+ </nav>
+ <div class="qrow" role="group" aria-label={ta('q.label')}><span>{t('q.label')}</span><button type="button" data-qv="auto">{t('q.auto')}</button><button type="button" data-qv="high">{t('q.high')}</button><button type="button" data-qv="low">{t('q.low')}</button></div>
+ <button class="mono mnc" type="button" id="mnc">{t('nav.close')}</button>
+<script is:inline>(()=>{const d=document.documentElement,qc=d.getAttribute("data-qc")||"auto",set=v=>{try{localStorage.setItem("abidora.q",v);if(v!=="low")localStorage.removeItem("abidora.q.slow")}catch(e){}location.reload()};
+const b=document.getElementById("qbtn");if(b){const o=["auto","high","low"];b.textContent=b.dataset.l+": "+b.dataset[qc];b.title=b.dataset.l;b.addEventListener("click",()=>set(o[(o.indexOf(qc)+1)%3]))}
+document.querySelectorAll(".qrow [data-qv]").forEach(x=>{x.setAttribute("aria-pressed",String(x.dataset.qv===qc));x.addEventListener("click",()=>{if(x.dataset.qv!==qc)set(x.dataset.qv)})})})()</script>
+</div>
+<Fragment set:html="{{LANGPANEL}}" />
+{/* 0.9 phone tab bar (home group): app-style navigation for thumbs. The AI button stays on its own in the bottom-right corner (owner, 21 Nov). Shown on phones on the home, worlds, founder, studio,
+   credits and galaxy pages; world pages keep their own bottom bar and the AI page its composer. Hides while scrolling down. */}
+<nav class="tabbar" aria-label={ta('a.sections')}>
+ <a href={u('home')} class="tb" data-tb="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5"/><path d="M6.5 10v9h11v-9"/><path d="M10 19v-5h4v5"/></svg><span>{t('tab.home')}</span></a>
+ <a href={`${u('home')}#worlds30`} class="tb" data-tb="worlds"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><ellipse cx="12" cy="12" rx="8" ry="3.2"/><path d="M12 4c2.2 2.3 3.2 5 3.2 8s-1 5.7-3.2 8c-2.2-2.3-3.2-5-3.2-8s1-5.7 3.2-8z"/></svg><span>{t('tab.worlds')}</span></a>
+ <span class="tb-mid" aria-hidden="true"></span>
+ <a href={u('studio')} class="tb" data-tb="studio"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg><span>{t('tab.studio')}</span></a>
+ <button type="button" class="tb tb-menu" aria-controls="mnu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14M5 12h14M5 16h9"/></svg><span>{t('tab.menu')}</span></button>
+</nav>
+<script is:inline>(()=>{const b=document.querySelector(".tabbar");if(!b)return;const p=location.pathname,h=document.body?document.body.className:"";const k=/\b(home)\b/.test(h)?"home":/\b(worlds|galaxy)\b/.test(h)?"worlds":/\bustudio\b/.test(h)?"studio":"";const c=b.querySelector('[data-tb="'+k+'"]');if(c)c.setAttribute("aria-current","page");b.querySelector(".tb-menu").addEventListener("click",()=>{const m=document.getElementById("mnb");m&&m.click()});let y=scrollY,a=0;addEventListener("scroll",()=>{if(a)return;a=requestAnimationFrame(()=>{a=0;const n=scrollY,d=n-y;if(Math.abs(d)>8){b.classList.toggle("tb-hide",d>0&&n>innerHeight*.6);y=n}})},{passive:true})})()</script>
+
+{ai && <a class="aifab" href={u('ai')} aria-label={ta('a.ai')}><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="19" cy="21" r="10.5" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="27" cy="13" r="4" fill="#e8b46a"/></svg><span class="mono">{t('nav.ai')}</span></a>}

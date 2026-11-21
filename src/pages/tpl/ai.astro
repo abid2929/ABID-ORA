@@ -1,0 +1,121 @@
+---
+import Base from '../../layouts/Base.astro';
+import Bar from '../../components/Bar.astro';
+import '../../styles/ai.css';
+import { t, ta, u } from '../../lib/t';
+const links: [string, string][] = [[u('home'), 'nav.home'], [u('worlds'), 'nav.worlds'], [u('studio'), 'nav.studio'], [u('founder'), 'nav.founder']];
+const sug = ['ai.sug1', 'ai.sug2', 'ai.sug3', 'ai.sug4'];
+---
+<Base title="ai.meta.title" desc="ai.meta.desc" bodyClass="aiapp">
+<Fragment slot="head" set:html={'<link rel="manifest" href="{{ROOT}}app/{{LANGCODE}}.webmanifest"><link rel="apple-touch-icon" href="{{ROOT}}assets/app/apple-180.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Abidora AI"><meta name="apple-mobile-web-app-status-bar-style" content="black"><script>try{if(localStorage.getItem("abidora.ai.lite")==="1")document.documentElement.classList.add("lite")}catch(e){}</script>'} />
+<Bar links={links} ai={false} />
+<main id="main" class="ai">
+ <div class="aiscrim" id="aiscrim" aria-hidden="true"></div>
+ <aside class="aiside" id="aiside" aria-label={ta('ai.chats')}>
+  <button type="button" class="mono aib aiback" id="aiback" aria-controls="aiside">← {t('ai.back')}</button>
+  <button type="button" class="ainew mono" id="ainew">+ {t('ai.new')}</button>
+  <h2 class="mono">{t('ai.chats')}</h2>
+  <input type="search" class="aihq" id="aihq" placeholder={ta('ai.hq')} aria-label={ta('ai.hq')} autocomplete="off" />
+  <ul class="aichats" id="aichats"></ul>
+  <div class="aisb">
+   <button type="button" class="mono aib" data-panel="aimem" aria-expanded="false">{t('ai.mem')}</button>
+   <button type="button" class="mono aib" id="aidelall">{t('ai.delall')}</button>
+   <button type="button" class="mono aib" data-panel="aiappp" aria-expanded="false">{t('ai.app')}</button>
+  </div>
+ </aside>
+ <section class="aimain" aria-labelledby="aih">
+  <header class="aihd">
+   <button type="button" class="mono aib aimenu" id="aimenu" aria-controls="aiside">{t('ai.menu')}</button>
+   <canvas class="orb orbs" aria-hidden="true"></canvas>
+   <div class="aiti"><h1 id="aih">Abidora AI</h1><p class="mono" id="aistat" role="status" aria-live="polite"></p></div>
+   <label class="aitog mono" title={ta('ai.vmodeh')} hidden><input type="checkbox" id="aivmode"><span>{t('ai.vmode')}</span></label>
+   <button type="button" class="mono aib ailitep" id="ailitep" data-panel="aiappp" aria-expanded="false" hidden>{t('ai.lite.on')}</button>
+   <button type="button" class="mono aib" id="aivset" data-panel="aivp" aria-expanded="false">{t('ai.vset')}</button>
+  </header>
+  <p class="aiban" id="aiban" role="alert" hidden></p>
+  <p class="aioff" id="aioff" role="status" aria-live="polite" hidden></p>
+  <div class="aiupd" id="aiupd" role="status" hidden><span>{t('ai.app.upd')}</span><button type="button" class="mono aib aipri" id="aiupdb">{t('ai.app.reload')}</button></div>
+  <div class="aiwel" id="aiwel">
+   <canvas class="orb orbb" aria-hidden="true"></canvas>
+   <h2>{t('ai.hello')}</h2>
+   <p>{t('ai.hellop')}</p>
+   <div class="aisugs">{sug.map((k) => <button type="button" class="aisug">{t(k)}</button>)}</div>
+  </div>
+  <div class="aimsgs" id="aimsgs" aria-live="polite"></div>
+  <div class="aiplay" id="aiplay" hidden>
+   <span class="mono">{t('ai.speak')}</span>
+   <button type="button" class="mono aib" id="aipp">{t('ai.pause')}</button>
+   <button type="button" class="mono aib" id="aist">{t('ai.stopv')}</button>
+   <button type="button" class="mono aib" id="airp">{t('ai.replay')}</button>
+  </div>
+  <p class="ainote mono aivname" id="aivname" hidden></p>
+  <p class="aiflash" id="aiflash" role="alert" hidden></p>
+  <div class="aiask" id="aimicask" role="dialog" aria-labelledby="aimicaskt" hidden>
+   <p id="aimicaskt">{t('ai.micask')}</p>
+   <div><button type="button" class="mono aib aipri" id="aimicyes">{t('ai.micok')}</button><button type="button" class="mono aib" id="aimicno">{t('ai.cancel')}</button></div>
+  </div>
+  <div class="aipend" id="aipend" hidden></div>
+  <form class="aicomp" id="aicomp" onsubmit="return false">
+   <input type="file" id="aifile" multiple hidden accept="image/*,application/pdf,.pdf,.txt,.md,.csv,.json,.xml,.html,.css,.js,.ts,.py,.php,.java,.c,.cpp,.cs,.go,.rs,.rb,.sql,.sh,.yml,.yaml,.log,.srt,text/*">
+   <button type="button" class="aimic aiatt" id="aiatt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5l-7.8 7.8a5 5 0 0 1-7.1-7.1l8.5-8.5a3.3 3.3 0 0 1 4.7 4.7l-8.5 8.5a1.7 1.7 0 0 1-2.4-2.4l7.8-7.8"/></svg><span class="sr">{t('ai.attach')}</span></button>
+   <label class="aiar" title={ta('ai.ar')}><span class="sr">{t('ai.ar')}</span><select id="aiar"><option value="">{t('ai.ar.auto')}</option><option value="1:1">1:1 · {t('ai.ar.sq')}</option><option value="4:3">4:3 · {t('ai.ar.land')}</option><option value="16:9">16:9 · {t('ai.ar.wide')}</option><option value="3:4">3:4 · {t('ai.ar.port')}</option><option value="9:16">9:16 · {t('ai.ar.tall')}</option></select></label>
+   <label class="sr" for="aiin">{t('ai.ph')}</label>
+   <textarea id="aiin" rows="1" maxlength="6000" placeholder={ta('ai.ph')}></textarea>
+   <button type="button" class="aimic aicallb" id="aicallb" title={ta('ai.vc.start')}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3.5l2.6.4 1.3 3.9-1.9 1.4a11 11 0 0 0 6.2 6.2l1.4-1.9 3.9 1.3.4 2.6a2 2 0 0 1-2.1 2.2A16.5 16.5 0 0 1 4.4 5.6a2 2 0 0 1 2.2-2.1z"/></svg><span class="sr">{t('ai.vc.start')}</span></button>
+   <button type="button" class="aimic" id="aimic" aria-pressed="false" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><span class="sr">{t('ai.mic')}</span></button>
+   <button type="button" class="aisend" id="aisend"><svg class="go" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg><svg class="sq" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="1.5"/></svg><span class="sr">{t('ai.send')}</span></button>
+  </form>
+  <div class="aicall" id="aicallv" role="dialog" aria-modal="true" aria-labelledby="aivch" hidden>
+   <div class="aivctop"><h2 id="aivch" class="mono">{t('ai.vc.title')}</h2><button type="button" class="mono aivctest" id="aivctest" title="v0.9.6">{t('ai.vc.test')}</button><label class="aivclang"><span class="sr">{t('ai.vlang')}</span><select id="aivclang"></select></label></div>
+   <button type="button" class="aivcorb" id="aivcorb" aria-describedby="aivchint"><canvas id="aivcav" aria-hidden="true"></canvas><span class="sr">{t('ai.vc.tap')}</span></button>
+   <p class="aivcst" id="aivcst" role="status" aria-live="polite"></p>
+   <p class="aivctx" id="aivctx"></p>
+   <p class="aivchint mono" id="aivchint">{t('ai.vc.tap')}</p>
+   <p class="aivcvoice mono" id="aivcvoice"></p>
+   <div class="aivclogw" id="aivclogw" hidden><ol class="aivclog" id="aivclog" aria-label={ta('ai.vc.log')}></ol></div>
+   <div class="aivcbar">
+    <button type="button" class="aivcb" id="aivcmute" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/><path class="sl" d="M4 4l16 16"/></svg><span>{t('ai.vc.mute')}</span></button>
+    <button type="button" class="aivcend" id="aivcend"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 15.2c5-4.3 13-4.3 18 0l-1.6 2.6-3.6-1.2v-2.4a12 12 0 0 0-7.6 0v2.4l-3.6 1.2z"/></svg>{t('ai.vc.end')}</button>
+    <button type="button" class="aivcb" id="aivclogb" aria-expanded="false" aria-controls="aivclogw"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14M5 11h14M5 16h9"/></svg><span>{t('ai.vc.log')}</span></button>
+   </div>
+   <label class="aivcvsel"><span class="mono">{t('ai.vc.voice')}</span><select id="aivcvsel"></select></label>
+   <p class="aivcnote">{t('ai.vc.how')} {t('ai.vc.note')}</p>
+  </div>
+  <p class="ainote mono" id="ainomic" hidden>{t('ai.nomic')}</p>
+  <p class="ainote ainotem" id="ainotem" tabindex="0">{t('ai.note')}</p>
+
+  <div class="aipanel" id="aivp" hidden role="dialog" aria-labelledby="aivpt">
+   <div class="aiph"><h2 id="aivpt" class="mono">{t('ai.vset')}</h2><button type="button" class="aiclose aib mono">×</button></div>
+   <label><span class="mono">{t('ai.vlang')}</span><select id="aivlang"></select></label>
+   <label><span class="mono">{t('ai.voice')}</span><select id="aivoice"></select></label>
+   <p class="ainote" id="aivnone" hidden>{t('ai.vnone')}</p>
+   <label><span class="mono">{t('ai.rate')}</span><input type="range" id="airate" min="0.6" max="1.6" step="0.1"><output></output></label>
+   <label><span class="mono">{t('ai.pitch')}</span><input type="range" id="aipitch" min="0.6" max="1.6" step="0.1"><output></output></label>
+   <label><span class="mono">{t('ai.vol')}</span><input type="range" id="aivol" min="0" max="1" step="0.1"><output></output></label>
+   <button type="button" class="mono aib aipri" id="aivtest">{t('ai.vtest')}</button>
+   <p class="ainote">{t('ai.vnote')}</p>
+  </div>
+  <div class="aipanel" id="aiappp" hidden role="dialog" aria-labelledby="aiappt">
+   <div class="aiph"><h2 id="aiappt" class="mono">{t('ai.app')}</h2><button type="button" class="aiclose aib mono">×</button></div>
+   <p class="ainote" id="aiinstp">{t('ai.app.instp')}</p>
+   <button type="button" class="mono aib aipri" id="aiinst" hidden>{t('ai.app.inst')}</button>
+   <p class="ainote" id="aiios" hidden>{t('ai.app.ios')}</p>
+   <p class="ainote" id="aimenuh" hidden>{t('ai.app.menu')}</p>
+   <p class="ainote" id="aiinsted" hidden>{t('ai.app.done')}</p>
+   <label class="aiswitch"><input type="checkbox" id="ailite"><span>{t('ai.lite')}</span></label>
+   <p class="ainote">{t('ai.lite.p')}</p>
+   <p class="ainote aiuse" id="aiuse"></p>
+   <p class="ainote">{t('ai.app.priv')}</p>
+   <button type="button" class="mono aib aidanger" id="aiwipe">{t('ai.app.wipe')}</button>
+  </div>
+  <div class="aipanel" id="aimem" hidden role="dialog" aria-labelledby="aimemt">
+   <div class="aiph"><h2 id="aimemt" class="mono">{t('ai.memh')}</h2><button type="button" class="aiclose aib mono">×</button></div>
+   <p class="ainote">{t('ai.memp')}</p>
+   <label><span class="mono">{t('ai.call')}</span><input id="aicall" maxlength="40" placeholder={ta('ai.callph')}></label>
+   <ul class="aimeml" id="aimeml"></ul>
+   <form id="aimemf" class="aimemf"><input id="aimemin" maxlength="200" placeholder={ta('ai.memph')} aria-label={ta('ai.memh')}><button class="mono aib aipri">{t('ai.memadd')}</button></form>
+  </div>
+ </section>
+</main>
+<script>import '../../scripts/common'; import '../../scripts/ai';</script>
+</Base>

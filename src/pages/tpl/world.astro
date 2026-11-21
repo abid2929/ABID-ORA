@@ -1,0 +1,52 @@
+---
+import Base from '../../layouts/Base.astro';
+import Bar from '../../components/Bar.astro';
+import Foot from '../../components/Foot.astro';
+import '../../styles/studio.css';
+import '../../styles/world.css';
+import { t, ta, u } from '../../lib/t';
+const links: [string, string][] = [[u('worlds'), 'nav.worlds'], [u('studio'), 'nav.studio'], [u('home'), 'nav.home']];
+---
+<Base title="wo.meta.title" desc="wo.meta.desc" bodyClass="wworld">
+<div id="cur" aria-hidden="true"><span></span></div>
+<div id="grain" aria-hidden="true"></div>
+<Bar links={links} />
+<main id="main" class="wo">
+ <script is:inline>document.documentElement.classList.add("wjs")</script>
+ <header class="woh">
+  <nav class="wtop" aria-label={ta('wo.nav')}>
+   <a class="wback" id="wback" data-wlist href={u('worlds')}><span aria-hidden="true">←</span> <span>{t('wo.back')}</span></a>
+   <p class="mono eb"><span id="wcat"></span></p>
+   <span class="wpn"><a class="wpn-a" id="wprev2" href="#" hidden><span aria-hidden="true">‹</span><span class="sr">{t('wo.prev')}</span></a><a class="wpn-a" id="wnext2" href="#" hidden><span aria-hidden="true">›</span><span class="sr">{t('wo.next')}</span></a></span>
+  </nav>
+  <div class="wtl">
+   <span class="mono wnum" id="wnum" aria-hidden="true"></span>
+   <h1 id="wname">{t('wo.loading')}</h1>
+  </div>
+  <p class="lead" id="wdesc"></p>
+  <div class="wact" id="wbar" role="toolbar" aria-label={ta('js.wb.label')}>
+   <a class="pill2 mono wbk" id="wback2" href={u('worlds')}><span class="wbi" aria-hidden="true">←</span> <span>{t('wo.back')}</span></a>
+   <button type="button" class="pill2 mono" id="wfav" aria-pressed="false" hidden><span class="hrt" aria-hidden="true">♡</span> <span id="wfavt">{t('wo.fav')}</span></button>
+   <button type="button" class="pill2 mono" id="wfull" hidden><span class="wbi" aria-hidden="true">⤢</span> <span id="wfullt">{t('wo.full')}</span></button>
+   <button type="button" class="pill2 mono" id="whelp" aria-expanded="false" aria-controls="whow" hidden><span class="wbi" aria-hidden="true">?</span> <span>{t('js.wb.help')}</span></button>
+   <button type="button" class="pill2 mono" id="wshare" hidden><span class="wbi" aria-hidden="true">↗</span> <span id="wsharet">{t('js.wb.share')}</span></button>
+   <button type="button" class="pill2 mono" id="wreset" hidden><span class="wbi" aria-hidden="true">↺</span> <span>{t('js.wb.reset')}</span></button>
+   <a class="pill2 mono wuni" href={u('home') + '#universe'}><span class="wbi" aria-hidden="true">✦</span> <span>{t('js.wb.universe')}</span></a>
+  </div>
+  <p class="mono whint" id="whow"></p>
+ </header>
+ <section class="wstage" id="wstage" aria-labelledby="wname" aria-busy="true">
+  <div class="wload mono" id="wload" role="status">{t('wo.loading')}</div>
+  <noscript><p class="wmsg">{t('wo.nojs')}</p></noscript>
+ </section>
+ <p class="wmsg" id="werr" role="alert" hidden></p>
+ <nav class="wnav" id="wnav" aria-label={ta('wo.nav')} hidden>
+  <a class="wp" id="wprev" href="#"><span class="mono">← {t('wo.prev')}</span><b></b></a>
+  <a class="wa mono" href={u('worlds')}>{t('wo.all')}</a>
+  <a class="wn" id="wnext" href="#"><span class="mono">{t('wo.next')} →</span><b></b></a>
+ </nav>
+ <p class="mono wnote">{t('wo.note')}</p>
+</main>
+<Foot links={[[u('home'), 'nav.home'], [u('worlds'), 'nav.worlds'], [u('studio'), 'nav.studio']]} />
+<script>import '../../scripts/world-page';</script>
+</Base>

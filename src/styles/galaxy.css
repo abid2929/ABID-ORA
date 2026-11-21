@@ -1,0 +1,57 @@
+/* World 74, Digital Galaxy. Identity: observatory at night. Deep indigo-black, starlight warm core to blue arms,
+   instrument-panel mono labels, one serif title. The 3D stage fills the screen; the panel floats like a viewfinder. */
+body.galaxy{--sky:#05060d;--sky2:#0b0e1d;--star:#ffd9a0;--arm:#8ab8ff;background:var(--sky)}
+body.galaxy .bar{mix-blend-mode:normal}
+.gx{position:relative;height:100vh;height:100svh;min-height:600px;overflow:hidden;background:radial-gradient(ellipse at 50% 55%,#11152b 0%,var(--sky) 62%)}
+.stage{position:absolute;inset:0}
+#gxc{width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+#gxc:active{cursor:grabbing}
+#gxc:focus-visible{outline:1px solid var(--signal);outline-offset:-6px}
+.fb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.75}
+.ld{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:16px;color:var(--bone2);transition:opacity .8s}
+.ld .ora{width:46px;height:46px;color:var(--bone)}.ld .ora .od{animation:orbit 1.8s cubic-bezier(.6,0,.4,1) infinite}
+.ld.done{opacity:0;pointer-events:none}
+.hud{position:absolute;inset:0;pointer-events:none;display:grid;grid-template-columns:minmax(0,1fr) 340px;grid-template-rows:1fr auto;gap:20px;padding:110px var(--gx) 26px}
+.hud>*{pointer-events:auto}
+.gtl{grid-row:1;grid-column:1;align-self:end;max-width:640px;display:grid;gap:14px}
+.gtl .eb{color:var(--arm)}
+.gtl h1{font-family:var(--serif);font-weight:400;font-size:clamp(64px,10vw,168px);line-height:.84;letter-spacing:-.04em;text-shadow:0 10px 60px rgba(5,6,13,.8)}
+.gtl .lead{color:#d8d4ea;max-width:46ch;font-size:clamp(16px,1.3vw,19px)}
+.msg{color:#ffb4a8;max-width:46ch;font-size:15px}
+.pnl{align-self:end;grid-row:1/3;grid-column:2;background:rgba(9,11,22,.62);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(160,180,255,.16);border-radius:18px;padding:18px;display:grid;gap:14px}
+.pl{color:var(--mute)}
+.shp{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.shp button{display:grid;gap:4px;text-align:start;padding:12px;border:1px solid rgba(160,180,255,.16);border-radius:12px;transition:border-color .3s,background .3s}
+.shp button:hover{border-color:rgba(236,230,220,.5)}
+.shp button[aria-pressed=true]{background:rgba(138,184,255,.14);border-color:var(--arm)}
+.shp .c{color:var(--arm);font-size:10px}.shp .nm{font-size:15px;line-height:1.2}
+.desc{color:#cfd0e2;font-size:14px;line-height:1.5;min-height:6.2em}
+.row{display:flex;justify-content:space-between;align-items:center;gap:14px;color:var(--bone2)}
+.row[hidden]{display:none}
+.stp{display:flex;align-items:center;gap:6px}.stp button{width:30px;height:30px;border:1px solid rgba(160,180,255,.25);border-radius:50%;font-size:16px;line-height:1}.stp output{min-width:2ch;text-align:center}
+.stp button:disabled{opacity:.3;cursor:default}
+input[type=range]{accent-color:var(--arm);width:150px}
+.btns{display:flex;flex-wrap:wrap;gap:6px}
+.pill2{border:1px solid rgba(236,230,220,.35);border-radius:999px;padding:9px 12px;font-size:10px;transition:background .25s,color .25s}
+.pill2:hover,.pill2[aria-pressed=true]{background:var(--bone);color:var(--sky)}
+.cnt{color:var(--mute)}
+.hint{grid-row:2;grid-column:1;color:rgba(216,212,234,.6);font-size:10px}
+.gxa{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2.2fr);gap:40px;padding:110px var(--gx);background:var(--sky2);border-top:1px solid rgba(160,180,255,.14)}
+.gxa h2{color:var(--mute);font-weight:400}
+.gxa>div{display:grid;gap:18px;max-width:64ch;color:#cfd0e2;font-size:18px;line-height:1.6}
+.gxa .big2{font-family:var(--serif);font-size:clamp(30px,3.6vw,52px);line-height:1.1;color:var(--bone);letter-spacing:-.01em}
+.gxa .note{color:var(--mute);text-transform:none;font-size:12px;letter-spacing:.02em}
+.gxa .cta2{display:inline-flex;width:max-content;border:1px solid var(--bone);border-radius:999px;padding:14px 22px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.gxa .cta2:hover{background:var(--bone);color:var(--sky)}
+body.galaxy footer{background:var(--sky)}
+@media (max-width:900px){
+ .gx{height:auto;min-height:0}
+ .stage{position:relative;height:72vh;height:72svh}
+ .hud{position:relative;display:flex;flex-direction:column;padding:0 var(--gx) 30px;margin-top:-30vh;gap:18px}
+ .pnl{grid-row:auto;grid-column:1}.gtl,.hint{grid-row:auto}
+ .gtl h1{font-size:clamp(56px,16vw,96px)}
+ .hint .kb{display:none}
+ .gxa{grid-template-columns:1fr;gap:18px;padding:70px var(--gx)}
+}
+@media (prefers-reduced-motion:reduce){.ld .ora .od{animation:none}}
+.gtl{transition:opacity .8s}.gx.inside .gtl{opacity:.12}

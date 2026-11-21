@@ -1,0 +1,19 @@
+---
+import Base from '../../layouts/Base.astro';
+import Bar from '../../components/Bar.astro';
+import Foot from '../../components/Foot.astro';
+import '../../styles/credits.css';
+import { t, u } from '../../lib/t';
+const links: [string, string][] = [[u('worlds'), 'nav.worlds'], [u('founder'), 'nav.founder']];
+---
+<Base title="cr.meta.title" desc="cr.meta.desc" bodyClass="credits">
+<Bar links={links} />
+<main id="main" class="cr">
+ <h1>{t('cr.title')}</h1>
+ <p class="lead" set:html={t('cr.lead')}></p>
+ <p class="lead cr-data" set:html={t('cr.data')}></p>
+ <div class="tw"><table><thead><tr><th><span class="skip">{t('cr.th.img')}</span></th><th>{t('cr.th.subject')}</th><th>{t('cr.th.creator')}</th><th>{t('cr.th.source')}</th><th>{t('cr.th.licence')}</th><th>{t('cr.th.used')}</th></tr></thead><tbody set:html="{{CREDITS_ROWS}}"></tbody></table></div>
+</main>
+<Foot links={[[u('home'), 'nav.home'], [u('worlds'), 'nav.worlds'], [u('founder'), 'nav.founder']]} />
+<script>import '../../scripts/common';</script>
+</Base>

@@ -1,0 +1,45 @@
+# Abidora: Apache / LiteSpeed rules. Works at the domain root or in a subfolder.
+Options -Indexes
+DirectoryIndex index.html index.php
+# The installer rewrites this line with the real folder (e.g. /abidora/404/index.html).
+ErrorDocument 404 /404/index.html
+AddDefaultCharset utf-8
+AddType application/manifest+json .webmanifest
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+# lets the installer confirm that this file is active
+RewriteRule ^ - [E=ABIDORA_HT:1]
+# private folder and hidden files are never served
+RewriteRule (^|/)_abidora(/|$) - [F,L]
+RewriteRule (^|/)\.(?!well-known/) - [F,L]
+# .md / .sql / .bak / .zip / .log / .tmp files are never served
+RewriteRule \.(md|sql|bak|log|tmp[0-9a-f]*|zip|sqlite|lock)$ - [F,L,NC]
+# a world page (worlds/w/?w=N) gets its own title, description and language links in the HTML itself
+RewriteCond %{QUERY_STRING} (?:^|&)w=([0-9]{1,3})(?:&|$)
+RewriteRule ^(?:([a-z]{2})/)?worlds/w/$ world-page.php?l=$1&w=%1 [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+Header always set X-Content-Type-Options "nosniff"
+Header always set Referrer-Policy "strict-origin-when-cross-origin"
+Header always set X-Frame-Options "SAMEORIGIN"
+Header always set Permissions-Policy "camera=(), microphone=(self), geolocation=(self), payment=(), usb=()"
+<FilesMatch "\.(js|css|woff2)$">
+Header set Cache-Control "public, max-age=31536000, immutable"
+</FilesMatch>
+<FilesMatch "\.(jpg|jpeg|png|webp|avif|svg)$">
+Header set Cache-Control "public, max-age=2592000"
+</FilesMatch>
+<FilesMatch "\.html$">
+Header set Cache-Control "no-cache"
+</FilesMatch>
+# Abidora AI app: the service worker and app manifests must always be checked for a newer version
+<FilesMatch "^(sw\.js|[a-z]{2}\.webmanifest)$">
+Header set Cache-Control "no-cache"
+</FilesMatch>
+</IfModule>
+
+<IfModule mod_deflate.c>
+AddOutputFilterByType DEFLATE text/html text/css text/plain application/javascript application/json image/svg+xml application/xml
+</IfModule>

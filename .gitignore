@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.astro/
+# server-only files: never commit (keys, database login, admin password)
+public/_abidora/storage/*
+!public/_abidora/storage/.gitkeep
+storage/config.php
+installed.lock
+*.env
+.env*
+*.log
+*.zip

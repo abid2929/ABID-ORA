@@ -1,0 +1,15 @@
+---
+/* The founder's own portrait (owner-provided). Face, colours and composition untouched.
+   20 Nov: the owner asked for "only me" on the site, so the default is now a clean cut-out of Abid
+   (AI matting with a portrait model, edge colour clean-up, soft fade below the waist) on a transparent
+   background; the page supplies the stage light behind him. The full original artwork is kept on disk. */
+import { ROOT, ta } from '../lib/t';
+interface Props { eager?: boolean; sizes: string; cls?: string }
+const { eager = false, sizes, cls = '' } = Astro.props;
+const b = `${ROOT}assets/founder/abid-islam-cutout-`;
+const set = (ext: string) => [640, 1100, 1600].map((w) => `${b}${w}.${ext} ${w}w`).join(', ');
+---
+<picture class={cls}>
+ <source type="image/avif" srcset={set('avif')} sizes={sizes}>
+ <img src={`${b}1100.webp`} srcset={set('webp')} sizes={sizes} width="2925" height="2401" alt={ta('fd.alt')} decoding="async" loading={eager ? 'eager' : 'lazy'} fetchpriority={eager ? 'high' : 'auto'} data-par>
+</picture>
