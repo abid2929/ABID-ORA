@@ -17,7 +17,7 @@ function ab_mail_hdr(string $s): string { return preg_match('/[^\x20-\x7e]/', $s
 function ab_mail_clean(string $s): string { return trim(preg_replace('/[\r\n\0]+/', ' ', $s)); }
 
 /** Build a MIME message (multipart/alternative when an HTML part is given). Returns [headers, body]. */
-function ab_mail_build(string $fromName, string $fromAddr, string $to, string $subject, string $text, ?string $html, ?string $replyTo, ?string $auto = null): array {
+function ab_mail_build(string $fromName, string $fromAddr, string $to, string $subject, string $text, ?string $html, ?string $replyTo, ?string $auto = null, array $extra = []): array {
   $host = ab_mail_host();
   $h = [
     'From: ' . ab_mail_hdr(ab_mail_clean($fromName)) . ' <' . ab_mail_clean($fromAddr) . '>',
@@ -29,6 +29,7 @@ function ab_mail_build(string $fromName, string $fromAddr, string $to, string $s
   /* a personal reply from the owner is a normal email (no Auto-Submitted header), so mail apps treat it like any other message */
   $auto ??= ($replyTo !== null && $html !== null ? 'auto-replied' : 'auto-generated');
   if ($auto !== 'no') $h[] = 'Auto-Submitted: ' . $auto;
+  foreach ($extra as $x) $h[] = ab_mail_clean((string)$x);
   if ($replyTo !== null && filter_var($replyTo, FILTER_VALIDATE_EMAIL)) $h[] = 'Reply-To: ' . ab_mail_clean($replyTo);
   if ($html === null) {
     $h[] = 'Content-Type: text/plain; charset=UTF-8'; $h[] = 'Content-Transfer-Encoding: base64';
@@ -43,12 +44,12 @@ function ab_mail_build(string $fromName, string $fromAddr, string $to, string $s
 }
 
 /** Send one email. $to must already be validated. Returns true when the transport accepted it. */
-function ab_mail_send(string $to, string $subject, string $text, ?string $html = null, ?string $replyTo = null, string $fromName = 'Abidora', ?string $auto = null): bool {
+function ab_mail_send(string $to, string $subject, string $text, ?string $html = null, ?string $replyTo = null, string $fromName = 'Abidora', ?string $auto = null, array $extra = []): bool {
   if (!filter_var($to, FILTER_VALIDATE_EMAIL)) return false;
   $smtp = ab_config()['smtp'] ?? null;
   $useSmtp = is_array($smtp) && !empty($smtp['host']) && !empty($smtp['user']) && !empty($smtp['pass']);
   $from = $useSmtp ? (string)$smtp['user'] : 'universe@' . ab_mail_host();
-  [$h, $body] = ab_mail_build($fromName, $from, $to, $subject, $text, $html, $replyTo, $auto);
+  [$h, $body] = ab_mail_build($fromName, $from, $to, $subject, $text, $html, $replyTo, $auto, $extra);
   if ($useSmtp) {
     try { return ab_smtp_send($smtp, $from, $to, ab_mail_hdr(ab_mail_clean($subject)), $h, $body); }
     catch (Throwable $e) { error_log('abidora smtp: ' . $e->getMessage()); return false; }
@@ -109,7 +110,7 @@ function ab_autoreply(string $lang, string $name): array {
   $hello = sprintf($hello, $who !== '' ? $who : '✦');
   $e = fn(string $s) => htmlspecialchars($s, ENT_QUOTES | ENT_HTML5, 'UTF-8');
   $ls = in_array($lang, ['en', 'es', 'fr', 'de'], true); $sp = fn(string $v) => $ls ? $v : '0'; $rtl = $lang === 'ar'; $dir = $rtl ? 'rtl' : 'ltr'; $al = $rtl ? 'right' : 'left';
-  $url = $site !== '' ? $site . ($lang !== 'en' ? $lang . '/' : '') : '';
+  $url = $site !== '' ? rtrim($site, '/') . '/' . ($lang !== 'en' ? $lang . '/' : '') : '';   /* 0.9.16: base may lack the last slash */
   /* stars: a fixed pattern of tiny dots, drawn with table cells so it works in mail apps without images */
   $stars = '';
   foreach ([[6, 20, .9], [18, 64, .5], [9, 78, .7], [24, 38, .4], [14, 90, .6], [4, 52, .5]] as [$t, $l, $o]) $stars .= '<div style="position:absolute;top:' . $t . 'px;left:' . $l . '%;width:2px;height:2px;border-radius:2px;background:#fff;opacity:' . $o . '"></div>';
@@ -179,5 +180,54 @@ function ab_owner_reply(string $toName, string $reply, string $original, string 
     . '</td></tr>'
     . '<tr><td style="padding:18px 34px 26px;border-top:1px solid rgba(240,228,210,.1);' . $sans . ';font-size:12px;line-height:1.5;color:#7d7568">You can reply to this email directly. · ' . $e($host) . '</td></tr>'
     . '</table></td></tr></table></body></html>';
+  return [$subj, $text, $html];
+}
+
+/** 0.9.16: the owner's ready-made invitation ("come and see Abidora"), sent from Admin > Invite.
+    Same dark Abidora frame as the other emails. English or Bangla. Returns [subject, text, html]. */
+function ab_invite_text(string $lang): array {
+  if ($lang === 'bn') return [
+    '%s আপনাকে Abidora দেখার আমন্ত্রণ জানিয়েছেন', '✦ ব্যক্তিগত আমন্ত্রণ', 'আপনার জন্য একটি আমন্ত্রণ',
+    'আমি Abidora বানিয়েছি। এটা একটা ফ্রি ওয়েবসাইট, যেখানে আসল 3D জিনিস ঘুরিয়ে, রং বদলে আর খেলে দেখা যায়: জামাকাপড়, জুতা, গেম, মহাকাশ, আর একটা AI সহকারী। ১০টা ভাষায় চলে, বাংলাও আছে।',
+    'একটু সময় নিয়ে ঘুরে দেখুন। কেমন লাগল জানালে খুব খুশি হব, এই ইমেইলের উত্তর দিলেই হবে।',
+    'Abidora ঘুরে দেখুন', 'প্রতিষ্ঠাতা, Abidora',
+    'এই ইমেইলটি পেয়েছেন কারণ %s নিজে আপনাকে আমন্ত্রণ পাঠিয়েছেন। আর না চাইলে এই ইমেইলের উত্তরে STOP লিখুন, আর পাঠানো হবে না।'];
+  return [
+    '%s invited you to Abidora', '✦ A personal invitation', 'You’re invited',
+    'I built Abidora, a free website where you can turn, change and play with real 3D things: clothes, shoes, games, space, and an AI helper. It works in 10 languages.',
+    'Take a few minutes and look around. I would love to hear what you think. Just reply to this email.',
+    'Visit Abidora', 'Founder, Abidora',
+    'You got this because %s invited you personally. Don’t want these? Reply STOP and you won’t get another.'];
+}
+function ab_invite(string $lang, string $signName): array {
+  [$subj, $kick, $head, $p1, $p2, $btn, $role, $foot] = ab_invite_text($lang);
+  $subj = sprintf($subj, $signName); $foot = sprintf($foot, $signName);
+  $e = fn(string $s) => htmlspecialchars($s, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+  $site = (string)(ab_config()['base'] ?? ''); $host = ab_mail_host();
+  $url = $site !== '' ? rtrim($site, '/') . '/' . ($lang !== 'en' ? $lang . '/' : '') : '';   /* 0.9.16: base may lack the last slash */
+  $bn = $lang === 'bn'; $ls = $bn ? '0' : '.18em';
+  $stars = '';
+  foreach ([[6, 20, .9], [18, 64, .5], [9, 78, .7], [24, 38, .4], [14, 90, .6], [4, 52, .5], [30, 12, .4], [22, 84, .5]] as [$t, $l, $o]) $stars .= '<div style="position:absolute;top:' . $t . 'px;left:' . $l . '%;width:2px;height:2px;border-radius:2px;background:#fff;opacity:' . $o . '"></div>';
+  $sans = 'font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,' . ($bn ? '\'Noto Sans Bengali\',\'Hind Siliguri\',' : '') . 'sans-serif';
+  $html = '<!doctype html><html lang="' . $e($lang) . '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><title>' . $e($subj) . '</title></head>'
+    . '<body style="margin:0;padding:0;background:#07060b">'
+    . '<div style="display:none;max-height:0;overflow:hidden">' . $e($p1) . '</div>'
+    . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#07060b;background-image:radial-gradient(60% 50% at 30% 0%,#3a1a3f 0%,rgba(7,6,11,0) 70%),radial-gradient(50% 40% at 90% 10%,#3b2a12 0%,rgba(7,6,11,0) 70%)"><tr><td align="center" style="padding:40px 16px">'
+    . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;border:1px solid rgba(240,228,210,.14);border-radius:18px;background:#0f0d14;overflow:hidden">'
+    . '<tr><td style="position:relative;padding:34px 34px 8px;font-family:Georgia,\'Times New Roman\',serif;color:#f0e6d6">' . $stars
+    . '<div style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:' . ($bn ? '13' : '11') . 'px;letter-spacing:' . $ls . ';text-transform:uppercase;color:#e8b46a">' . $e($kick) . '</div>'
+    . '<div style="font-size:40px;line-height:1.02;margin:14px 0 4px;letter-spacing:-.01em">Abidora</div>'
+    . '<div style="font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:#a89f92;font-family:ui-monospace,Menlo,Consolas,monospace">A Universe Without Limits</div>'
+    . '<div style="height:1px;background:linear-gradient(90deg,#d6568c,#e8b46a,rgba(232,180,106,0));margin:20px 0 22px"></div></td></tr>'
+    . '<tr><td style="padding:0 34px;' . $sans . ';font-size:16px;line-height:1.65;color:#e6ddd0">'
+    . '<p style="margin:0 0 14px;font-family:Georgia,serif;font-size:24px;line-height:1.2;color:#f0e6d6">' . $e($head) . '</p>'
+    . '<p style="margin:0 0 14px">' . $e($p1) . '</p><p style="margin:0 0 26px;color:#b9ae9f">' . $e($p2) . '</p>'
+    . ($url !== '' ? '<p style="margin:0 0 30px"><a href="' . $e($url) . '" style="display:inline-block;padding:14px 26px;border-radius:999px;background:#f0e6d6;color:#0f0d14;text-decoration:none;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:' . ($bn ? '15' : '12') . 'px;letter-spacing:' . ($bn ? '0' : '.12em') . ';text-transform:uppercase">' . $e($btn) . ' →</a></p>'
+      . '<p style="margin:-18px 0 28px;font-size:12px;color:#7d7568;word-break:break-all">' . $e($url) . '</p>' : '')
+    . '<p style="margin:0 0 2px;font-family:Georgia,serif;font-style:italic;font-size:18px;color:#e8b46a">— ' . $e($signName) . '</p>'
+    . '<p style="margin:0 0 30px;font-size:13px;color:#8f8676">' . $e($role) . '</p></td></tr>'
+    . '<tr><td style="padding:18px 34px 26px;border-top:1px solid rgba(240,228,210,.1);' . $sans . ';font-size:12px;line-height:1.5;color:#7d7568">' . $e($foot) . ' · ' . $e($host) . '</td></tr>'
+    . '</table></td></tr></table></body></html>';
+  $text = "$kick\n\nABIDORA · A Universe Without Limits\n\n$head\n\n$p1\n\n$p2\n" . ($url !== '' ? "\n$btn: $url\n" : '') . "\n— $signName\n$role\n\n$foot\n";
   return [$subj, $text, $html];
 }

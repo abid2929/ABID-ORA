@@ -9,13 +9,17 @@ ab_session();
 
 const ROLES = ['owner' => 'Owner', 'editor' => 'Editor', 'translator' => 'Translator'];
 const CAN = [
-  'overview' => ['owner', 'editor', 'translator'], 'messages' => ['owner', 'editor'], 'translations' => ['owner', 'editor', 'translator'],
+  'overview' => ['owner', 'editor', 'translator'], 'messages' => ['owner', 'editor'], 'invite' => ['owner'], 'translations' => ['owner', 'editor', 'translator'],
   'founder' => ['owner', 'editor'], 'worlds' => ['owner', 'editor'], 'users' => ['owner'], 'audit' => ['owner'], 'backup' => ['owner'], 'settings' => ['owner'], 'ai' => ['owner'],
 ];
 $me = $_SESSION['user'] ?? null;
 $flash = $_SESSION['flash'] ?? null; unset($_SESSION['flash']);
 function go(string $q, string $msg = '', bool $ok = true): never { if ($msg) $_SESSION['flash'] = [$ok, $msg]; header('Location: ./' . ($q ? "?$q" : '')); exit; }
 /* 0.9.15: the replies table is created on first use, so sites installed before 0.9.15 need no installer run */
+const INV_PER_SEND = 10, INV_PER_DAY = 30, INV_REPEAT_DAYS = 30;   /* 0.9.16: invitation limits, so the site's mail never looks like spam */
+function ab_invites_ready(): void { static $done = false; if ($done) return; $done = true; foreach (ab_schema(ab_driver()) as $sql) if (str_contains($sql, 'ab_invites')) ab_db()->exec($sql); }
+function ab_inv_block(): array { return array_values(array_filter(array_map(fn($x) => strtolower(trim($x)), preg_split('/[\s,;]+/', (string)(ab_setting('invite_block', '') ?? ''))), fn($x) => $x !== '')); }
+function ab_inv_today(): int { $q = ab_db()->prepare('SELECT COUNT(*) FROM ab_invites WHERE ok=1 AND created_at > ?'); $q->execute([gmdate('Y-m-d H:i:s', time() - 86400)]); return (int)$q->fetchColumn(); }
 function ab_replies_ready(): void { static $done = false; if ($done) return; $done = true; foreach (ab_schema(ab_driver()) as $sql) if (str_contains($sql, 'ab_replies')) ab_db()->exec($sql); }
 function can(?array $me, string $tab): bool { return $me && in_array($me['role'], CAN[$tab] ?? [], true); }
 
@@ -69,6 +73,38 @@ if ($act !== '') {
       if ($ok) ab_db()->prepare('UPDATE ab_messages SET read_at=COALESCE(read_at, ?) WHERE id=?')->execute([ab_now(), $id]);
       ab_audit($who, 'message_reply', '#' . $id . ($ok ? ' sent' : ' failed'));
       go('tab=messages#m' . $id, $ok ? 'Reply sent to ' . $m['email'] . '.' : 'The reply could not be sent. It is saved below. Check Settings > Outgoing mail, then try again.', $ok);
+    case 'invite_send':   /* 0.9.16: send the ready-made Abidora invitation to people the owner knows */
+      if (!can($me, 'invite')) break;
+      ab_invites_ready(); require_once AB_DIR . '/lib/mail.php';
+      $lang = ($_POST['lang'] ?? 'en') === 'bn' ? 'bn' : 'en';
+      $list = array_values(array_unique(array_filter(array_map(fn($x) => strtolower(trim($x)), preg_split('/[\s,;]+/', (string)($_POST['emails'] ?? ''))), fn($x) => $x !== '')));
+      if (!$list) go('tab=invite', 'Type at least one email address.', false);
+      if (count($list) > INV_PER_SEND) go('tab=invite', 'At most ' . INV_PER_SEND . ' addresses at a time.', false);
+      $block = ab_inv_block(); $left = INV_PER_DAY - ab_inv_today();
+      $own = (string)(ab_setting('notify_email', '') ?? ''); $own = filter_var($own, FILTER_VALIDATE_EMAIL) ? $own : null;
+      $sign = (string)(ab_site()['name'] ?? 'Abid Islam'); $sign = $sign !== '' ? $sign : 'Abid Islam';
+      [$subj, $text, $html] = ab_invite($lang, $sign);
+      $extra = $own ? ['List-Unsubscribe: <mailto:' . $own . '?subject=STOP>'] : [];
+      $sent = []; $skip = [];
+      $recent = ab_db()->prepare('SELECT COUNT(*) FROM ab_invites WHERE ok=1 AND email=? AND created_at > ?');
+      $log = ab_db()->prepare('INSERT INTO ab_invites (email, lang, sent_by, ok, note, created_at) VALUES (?,?,?,?,?,?)');
+      foreach ($list as $em) {
+        if (!filter_var($em, FILTER_VALIDATE_EMAIL)) { $skip[] = $em . ' (not a valid address)'; continue; }
+        if (in_array($em, $block, true)) { $skip[] = $em . ' (on the do-not-send list)'; continue; }
+        $recent->execute([$em, gmdate('Y-m-d H:i:s', time() - INV_REPEAT_DAYS * 86400)]);
+        if ((int)$recent->fetchColumn() > 0) { $skip[] = $em . ' (already invited in the last ' . INV_REPEAT_DAYS . ' days)'; continue; }
+        if ($left <= 0) { $skip[] = $em . ' (daily limit of ' . INV_PER_DAY . ' reached, try tomorrow)'; continue; }
+        $ok = ab_mail_send($em, $subj, $text, $html, $own, $sign . ' · Abidora', 'no', $extra);
+        $log->execute([$em, $lang, $who, $ok ? 1 : 0, $ok ? '' : 'mail not accepted', ab_now()]);
+        if ($ok) { $sent[] = $em; $left--; } else $skip[] = $em . ' (could not send, check Settings > Outgoing mail)';
+      }
+      ab_audit($who, 'invite', count($sent) . ' sent, ' . count($skip) . ' skipped');
+      go('tab=invite', ($sent ? 'Invitation sent to ' . implode(', ', $sent) . '.' : 'Nothing was sent.') . ($skip ? ' Skipped: ' . implode('; ', $skip) . '.' : ''), (bool)$sent);
+    case 'invite_block':
+      if (!can($me, 'invite')) break;
+      $b = array_values(array_unique(array_filter(array_map(fn($x) => strtolower(trim($x)), preg_split('/[\s,;]+/', (string)($_POST['block'] ?? ''))), fn($x) => filter_var($x, FILTER_VALIDATE_EMAIL))));
+      ab_set_setting('invite_block', implode("\n", $b)); ab_audit($who, 'invite_block', count($b) . ' addresses');
+      go('tab=invite', 'Do-not-send list saved (' . count($b) . ').');
     case 'msg_del': if (!can($me, 'messages')) break; ab_db()->prepare('DELETE FROM ab_messages WHERE id=?')->execute([(int)$_POST['id']]); ab_audit($who, 'message_delete', '#' . (int)$_POST['id']); go('tab=messages', 'Message deleted.');
     case 'tr_save':
       if (!can($me, 'translations')) break;
@@ -311,6 +347,25 @@ if ($tab === 'audit') {
   echo '<div class="card"><table><tr><th>When (UTC)</th><th>User</th><th>Action</th><th>Detail</th></tr>';
   foreach (ab_db()->query('SELECT * FROM ab_audit ORDER BY id DESC LIMIT 300')->fetchAll() as $a) echo '<tr><td class="note">' . ab_h($a['created_at']) . '</td><td>' . ab_h($a['user_name']) . '</td><td>' . ab_h($a['action']) . '</td><td class="note">' . ab_h($a['detail']) . '</td></tr>';
   echo '</table></div>';
+}
+if ($tab === 'invite') {   /* 0.9.16 */
+  ab_invites_ready(); require_once AB_DIR . '/lib/mail.php';
+  $today = ab_inv_today(); $own = (string)(ab_setting('notify_email', '') ?? '');
+  $sign = (string)(ab_site()['name'] ?? 'Abid Islam'); $sign = $sign !== '' ? $sign : 'Abid Islam';
+  $pv = ($_GET['pv'] ?? 'en') === 'bn' ? 'bn' : 'en'; [$psubj, , $phtml] = ab_invite($pv, $sign);
+  echo '<div class="inv"><form method="post" class="card">' . $csrf . '<input type="hidden" name="act" value="invite_send"><h2 style="margin-top:0">Invite people to Abidora</h2>'
+    . '<p class="note">Type the email of someone you know. A ready-made Abidora invitation with the site button goes to them. You can put up to ' . INV_PER_SEND . ' addresses, separated by commas or new lines.</p>'
+    . '<label for="iv">Email addresses</label><textarea id="iv" name="emails" rows="3" placeholder="friend@gmail.com, other@gmail.com" required></textarea>'
+    . '<label for="il">Language of the email</label><select id="il" name="lang"><option value="en">English</option><option value="bn">বাংলা (Bangla)</option></select>'
+    . '<p style="margin:16px 0 6px"><button>Send invitation</button></p>'
+    . '<p class="note">Sent today: <b>' . $today . ' / ' . INV_PER_DAY . '</b>. The same address is not invited twice within ' . INV_REPEAT_DAYS . ' days. Replies go to ' . ($own !== '' ? '<b>' . ab_h($own) . '</b>' : 'the email in Settings (none set yet)') . '.</p></form>';
+  echo '<div class="card"><div class="row" style="justify-content:space-between"><h2 style="margin:0">Preview</h2><span class="row"><a class="btn' . ($pv === 'en' ? '' : ' btn2') . '" href="?tab=invite&amp;pv=en">English</a><a class="btn' . ($pv === 'bn' ? '' : ' btn2') . '" href="?tab=invite&amp;pv=bn">বাংলা</a></span></div><p class="note">Subject: ' . ab_h($psubj) . '</p><iframe class="ipv" title="Invitation preview" sandbox srcdoc="' . htmlspecialchars($phtml, ENT_QUOTES, 'UTF-8') . '"></iframe></div>';
+  $rows = ab_db()->query('SELECT * FROM ab_invites ORDER BY id DESC LIMIT 100')->fetchAll();
+  echo '<div class="card"><h2 style="margin-top:0">Sent invitations</h2>' . ($rows ? '<div class="tw"><table><tr><th>Email</th><th>Language</th><th>Status</th><th>When (UTC)</th></tr>' : '<p class="note">None yet.</p>');
+  foreach ($rows as $r) echo '<tr><td>' . ab_h($r['email']) . '</td><td>' . ($r['lang'] === 'bn' ? 'Bangla' : 'English') . '</td><td>' . ((int)$r['ok'] === 1 ? '<span class="tag-ok">Sent</span>' : '<span class="tag-no">Not sent</span>') . '</td><td class="note">' . ab_h($r['created_at']) . '</td></tr>';
+  echo ($rows ? '</table></div>' : '') . '</div>';
+  echo '<form method="post" class="card">' . $csrf . '<input type="hidden" name="act" value="invite_block"><h2 style="margin-top:0">Do-not-send list</h2><p class="note">If someone replies STOP, put their email here. They will never get an invitation again.</p><textarea name="block" rows="3" placeholder="name@gmail.com">' . ab_h(implode("\n", ab_inv_block())) . '</textarea><p style="margin-top:12px"><button class="btn btn2">Save list</button></p></form></div>';
+  echo '<style>.inv .ipv{width:100%;height:760px;border:0;border-radius:12px;background:#07060b;margin-top:8px}.tag-ok{display:inline-block;padding:2px 9px;border-radius:99px;background:rgba(120,200,140,.16);color:#9fe0b0;font-size:12px}.tag-no{display:inline-block;padding:2px 9px;border-radius:99px;background:rgba(255,138,122,.16);color:#ff8a7a;font-size:12px}.inv .tw{overflow-x:auto}.inv table{min-width:420px}@media (max-width:560px){.inv .ipv{height:900px}}</style>';
 }
 if ($tab === 'backup') {
   echo '<div class="card"><p>Download one file with all translations, site data and the database (users with hashed passwords, messages, audit log, settings).</p><p><a class="btn" href="?dl=backup">Download backup</a></p><p class="note">Translation edits also keep automatic copies in _abidora/storage/backups/i18n on the server. For a full-site copy including images, also use cPanel > Backup.</p></div>';

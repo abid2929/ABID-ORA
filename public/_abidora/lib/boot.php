@@ -42,6 +42,7 @@ function ab_schema(string $driver): array {
     "CREATE TABLE IF NOT EXISTS ab_throttle (id $id, k VARCHAR(80) NOT NULL, created_at DATETIME NOT NULL)$tail",
     "CREATE TABLE IF NOT EXISTS ab_settings (k VARCHAR(60) NOT NULL PRIMARY KEY, v TEXT NOT NULL)$tail",
     "CREATE TABLE IF NOT EXISTS ab_replies (id $id, message_id INT NOT NULL, body TEXT NOT NULL, sent_by VARCHAR(60) NOT NULL, ok TINYINT NOT NULL DEFAULT 0, created_at DATETIME NOT NULL)$tail",   /* 0.9.15: owner replies to contact messages */
+    "CREATE TABLE IF NOT EXISTS ab_invites (id $id, email VARCHAR(120) NOT NULL, lang VARCHAR(5) NOT NULL DEFAULT 'en', sent_by VARCHAR(60) NOT NULL, ok TINYINT NOT NULL DEFAULT 0, note VARCHAR(120) NOT NULL DEFAULT '', created_at DATETIME NOT NULL)$tail",   /* 0.9.16: owner's invitations */
     $my ? "CREATE INDEX ab_throttle_k ON ab_throttle (k, created_at)" : "CREATE INDEX IF NOT EXISTS ab_throttle_k ON ab_throttle (k, created_at)",
   ];
 }

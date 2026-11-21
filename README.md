@@ -2,7 +2,7 @@
 
 Abidora is a global website by **Abid Islam**. It contains interactive 3D "worlds" (fashion, watches, racing, space, oceans, technology and more), a world studio, and Abidora AI, an assistant with chat and voice. The site is available in 10 languages: English, Bangla, Spanish, French, German, Arabic (RTL), Chinese, Japanese, Korean and Hindi.
 
-Version: **0.9.15** (21 Nov 2026). Staging site: https://abidora.boostnixmedia.com
+Version: **0.9.16** (21 Nov 2026). Staging site: https://abidora.boostnixmedia.com
 
 ## Stack
 - **Astro + TypeScript**. Builds static page templates and bundled JS/CSS.
