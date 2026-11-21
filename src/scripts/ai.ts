@@ -191,6 +191,7 @@ async function ask(c: Chat | null = cur, at = (c?.msgs.length ?? 0) - 1, queued 
   const body = el.querySelector('.aibody') as HTMLElement;
   body.innerHTML = '<span class="aidots" aria-hidden="true"><i></i><i></i><i></i></span>'; if (shown()) list.scrollTop = list.scrollHeight;
   setBusy(true); setState('think'); abort = new AbortController();
+  const tType = performance.now(); if (!callOn) chime('send');   /* 0.9.17 (owner): Messenger feel, a soft sound and about a second of typing dots */
   const tl = tools.live(out, body, (force?: boolean) => { if (shown() && (force || list.scrollHeight - list.scrollTop - list.clientHeight < 200)) list.scrollTop = list.scrollHeight; });   /* search / crypto / image progress inside the bubble */
   const extra = callOn ? {} : await tools.extra(c.msgs.slice(0, at + 2));
   if (app.lite()) delete (extra as Record<string, string>).previmg;   /* Data Saver: the last picture is not uploaded again */
@@ -225,7 +226,7 @@ async function ask(c: Chat | null = cur, at = (c?.msgs.length ?? 0) - 1, queued 
         for (const line of block.split('\n')) { if (line.startsWith('event:')) ev = line.slice(6).trim(); else if (line.startsWith('data:')) data += line.slice(5).trim(); }
         if (!data) continue;
         const j = JSON.parse(data);
-        if (ev === 'delta') { if (!j.t) continue; out.content += j.t; if (callOn) callText(out.content); if (state === 'think' && !speaking()) setState('idle'); if (!raf) raf = requestAnimationFrame(paint); voiceFeed(false); }
+        if (ev === 'delta') { if (!j.t) continue; out.content += j.t; if (callOn) callText(out.content); if (state === 'think' && !speaking()) setState('idle'); if (!raf) { const w = callOn ? 0 : tType + 1100 - performance.now(); if (w > 0) raf = window.setTimeout(() => { if (out.content) chime('recv'); paint(); }, w); else { if (out.content.length === j.t.length && !callOn) chime('recv'); raf = requestAnimationFrame(paint); } } voiceFeed(false); }
         else if (ev === 'error') throw new Error(j.code === 'img' ? 'img.' + (j.why || 'other') : (j.code || 'other'));
         else await tl.event(ev, j);
       }
@@ -243,7 +244,7 @@ async function ask(c: Chat | null = cur, at = (c?.msgs.length ?? 0) - 1, queued 
     else if (!out.content) { out.err = ['notready', 'wait', 'cap', 'quota', 'key', 'down', 'offline', 'files', 'big'].includes(code) ? code : (code === 'Failed to fetch' || code === 'network' ? 'net' : 'other'); }
     if (out.err) result = 'fail';
   } finally {
-    clearTimeout(slowT); if (raf) cancelAnimationFrame(raf); tl.end();
+    clearTimeout(slowT); if (raf) { cancelAnimationFrame(raf); clearTimeout(raf); } tl.end();
     abort = null; setBusy(false); if (!speaking()) setState('idle');
     if (result === 'net' || result === 'hold') {
       /* nothing was answered: the message waits (it is saved, so a refresh or closing the app loses nothing) */
@@ -841,3 +842,26 @@ addEventListener('storage', (e) => {
   renderList(); renderChat(); showNet();
 });
 showNet(); void sync();
+
+/* 0.9.17 (owner): phone only (CSS limits it): hide attach + shape buttons while the visitor is typing; they come back when the box is empty or loses focus */
+{
+  const comp = document.getElementById('aicomp');
+  const sync = () => comp?.classList.toggle('typing', document.activeElement === input && input.value.trim() !== '');
+  ['input', 'focus', 'blur'].forEach((ev) => input.addEventListener(ev, sync));
+  send.addEventListener('click', () => setTimeout(sync, 0));
+}
+
+/* 0.9.17 (owner): soft Messenger-like sounds, made in the browser (no file to download): a light "pop" when a message is sent and a soft "tick" when the reply arrives */
+let chimeCtx: AudioContext | null = null;
+function chime(kind: 'send' | 'recv') {
+  try {
+    const AC = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext; if (!AC) return;
+    chimeCtx ||= new AC(); const ctx = chimeCtx; if (ctx.state === 'suspended') void ctx.resume();
+    const t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = 'sine';
+    if (kind === 'send') { o.frequency.setValueAtTime(520, t); o.frequency.exponentialRampToValueAtTime(880, t + .09); }
+    else { o.frequency.setValueAtTime(990, t); o.frequency.exponentialRampToValueAtTime(740, t + .12); }
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(kind === 'send' ? .07 : .05, t + .015); g.gain.exponentialRampToValueAtTime(0.0001, t + .18);
+    o.connect(g).connect(ctx.destination); o.start(t); o.stop(t + .2);
+  } catch { /* sound is optional */ }
+}

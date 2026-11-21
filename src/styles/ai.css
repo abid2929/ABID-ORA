@@ -353,3 +353,7 @@ body[data-ai=think] .aicomp::before,body[data-ai=listen] .aicomp::before{opacity
 html.lite .aimain::before{display:none}
 html.lite .aicomp,html.lite .aisug{-webkit-backdrop-filter:none;backdrop-filter:none}
 html.lite .aiwel h2{background:none;color:var(--bone)}
+/* 0.9.17 (owner): on phones, while typing, hide the attach and picture-shape buttons so the text box gets the full width */
+@media (max-width:820px){.aicomp.typing .aiatt,.aicomp.typing .aiar{display:none}}
+/* 0.9.17 (owner): Messenger-style typing bubble */
+.aidots{padding:13px 16px;border-radius:20px 20px 20px 6px;background:rgba(240,228,210,.07);border:1px solid var(--line)}
