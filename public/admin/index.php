@@ -15,6 +15,8 @@ const CAN = [
 $me = $_SESSION['user'] ?? null;
 $flash = $_SESSION['flash'] ?? null; unset($_SESSION['flash']);
 function go(string $q, string $msg = '', bool $ok = true): never { if ($msg) $_SESSION['flash'] = [$ok, $msg]; header('Location: ./' . ($q ? "?$q" : '')); exit; }
+/* 0.9.15: the replies table is created on first use, so sites installed before 0.9.15 need no installer run */
+function ab_replies_ready(): void { static $done = false; if ($done) return; $done = true; foreach (ab_schema(ab_driver()) as $sql) if (str_contains($sql, 'ab_replies')) ab_db()->exec($sql); }
 function can(?array $me, string $tab): bool { return $me && in_array($me['role'], CAN[$tab] ?? [], true); }
 
 /* ---------- login / logout ---------- */
@@ -50,6 +52,23 @@ if ($act !== '') {
   switch ($act) {
     case 'logout': ab_audit($who, 'logout'); $_SESSION = []; session_destroy(); go('');
     case 'msg_read': if (!can($me, 'messages')) break; ab_db()->prepare('UPDATE ab_messages SET read_at=? WHERE id=?')->execute([ab_now(), (int)$_POST['id']]); go('tab=messages');
+    case 'msg_reply':   /* 0.9.15: reply to a visitor by email from the admin */
+      if (!can($me, 'messages')) break;
+      ab_replies_ready(); require_once AB_DIR . '/lib/mail.php';
+      $id = (int)($_POST['id'] ?? 0); $txt = trim(str_replace("\r\n", "\n", (string)($_POST['reply'] ?? '')));
+      $q = ab_db()->prepare('SELECT * FROM ab_messages WHERE id=?'); $q->execute([$id]); $m = $q->fetch();
+      if (!$m) go('tab=messages', 'That message no longer exists.', false);
+      if ($txt === '') go('tab=messages#m' . $id, 'Write a reply first.', false);
+      if (mb_strlen($txt) > 5000) go('tab=messages#m' . $id, 'The reply is too long (5000 characters at most).', false);
+      if (!filter_var((string)$m['email'], FILTER_VALIDATE_EMAIL)) go('tab=messages#m' . $id, 'This message has no valid email address to reply to.', false);
+      $own = (string)(ab_setting('notify_email', '') ?? ''); $own = filter_var($own, FILTER_VALIDATE_EMAIL) ? $own : null;
+      $sign = (string)(ab_site()['name'] ?? 'Abid Islam'); $sign = $sign !== '' ? $sign : 'Abid Islam';
+      [$subj, $text, $html] = ab_owner_reply((string)$m['name'], $txt, (string)$m['body'], (string)$m['created_at'], $sign);
+      $ok = ab_mail_send((string)$m['email'], $subj, $text, $html, $own, $sign . ' · Abidora', 'no');
+      ab_db()->prepare('INSERT INTO ab_replies (message_id, body, sent_by, ok, created_at) VALUES (?,?,?,?,?)')->execute([$id, $txt, $who, $ok ? 1 : 0, ab_now()]);
+      if ($ok) ab_db()->prepare('UPDATE ab_messages SET read_at=COALESCE(read_at, ?) WHERE id=?')->execute([ab_now(), $id]);
+      ab_audit($who, 'message_reply', '#' . $id . ($ok ? ' sent' : ' failed'));
+      go('tab=messages#m' . $id, $ok ? 'Reply sent to ' . $m['email'] . '.' : 'The reply could not be sent. It is saved below. Check Settings > Outgoing mail, then try again.', $ok);
     case 'msg_del': if (!can($me, 'messages')) break; ab_db()->prepare('DELETE FROM ab_messages WHERE id=?')->execute([(int)$_POST['id']]); ab_audit($who, 'message_delete', '#' . (int)$_POST['id']); go('tab=messages', 'Message deleted.');
     case 'tr_save':
       if (!can($me, 'translations')) break;
@@ -239,7 +258,18 @@ if ($tab === 'overview') {
 if ($tab === 'messages') {
   $rows = ab_db()->query('SELECT * FROM ab_messages ORDER BY id DESC LIMIT 200')->fetchAll();
   if (!$rows) echo '<p class="note">No messages yet.</p>';
-  foreach ($rows as $r) echo '<div class="card"' . ($r['read_at'] ? '' : ' style="border-color:var(--sig)"') . '><div class="row" style="justify-content:space-between"><b>' . ab_h($r['name']) . '</b><span class="note">' . ab_h($r['created_at']) . ' UTC · ' . ab_h($r['lang']) . '</span></div><p><a href="mailto:' . ab_h($r['email']) . '">' . ab_h($r['email']) . '</a></p><p style="white-space:pre-wrap">' . ab_h($r['body']) . '</p><form method="post" class="row">' . $csrf . '<input type="hidden" name="id" value="' . (int)$r['id'] . '">' . ($r['read_at'] ? '' : '<button class="btn btn2" name="act" value="msg_read">Mark read</button>') . '<button class="danger" name="act" value="msg_del" onclick="return confirm(\'Delete this message?\')">Delete</button></form></div>';
+  /* 0.9.15: each message has a Reply box; the reply goes to the visitor's email, and sent replies are listed under the message */
+  ab_replies_ready(); $reps = [];
+  foreach (ab_db()->query('SELECT * FROM ab_replies ORDER BY id')->fetchAll() as $x) $reps[(int)$x['message_id']][] = $x;
+  $own = (string)(ab_setting('notify_email', '') ?? '');
+  if ($rows) echo '<p class="note">Reply here and it goes to the visitor’s email inbox. When they answer, their answer comes to ' . ($own !== '' ? '<b>' . ab_h($own) . '</b>' : 'the email in Settings (none set yet)') . '.</p>';
+  foreach ($rows as $r) {
+    $rid = (int)$r['id']; $mine = $reps[$rid] ?? []; $replied = (bool)array_filter($mine, fn($x) => (int)$x['ok'] === 1);
+    echo '<div class="card" id="m' . $rid . '"' . ($r['read_at'] ? '' : ' style="border-color:var(--sig)"') . '><div class="row" style="justify-content:space-between"><b>' . ab_h($r['name']) . ($replied ? ' <span class="tag-ok">Replied</span>' : '') . '</b><span class="note">' . ab_h($r['created_at']) . ' UTC · ' . ab_h($r['lang']) . '</span></div><p><a href="mailto:' . ab_h($r['email']) . '">' . ab_h($r['email']) . '</a></p><p style="white-space:pre-wrap">' . ab_h($r['body']) . '</p>';
+    foreach ($mine as $x) echo '<div class="reply' . ((int)$x['ok'] === 1 ? '' : ' fail') . '"><span class="note">' . ((int)$x['ok'] === 1 ? 'You replied' : 'Not sent') . ' · ' . ab_h($x['created_at']) . ' UTC · ' . ab_h($x['sent_by']) . '</span><p style="white-space:pre-wrap;margin:6px 0 0">' . ab_h($x['body']) . '</p></div>';
+    echo '<form method="post" class="rform">' . $csrf . '<input type="hidden" name="id" value="' . $rid . '"><label for="rp' . $rid . '">Reply to ' . ab_h($r['name']) . '</label><textarea id="rp' . $rid . '" name="reply" rows="4" maxlength="5000" placeholder="Write your reply…"></textarea><div class="row" style="margin-top:10px"><button name="act" value="msg_reply">Send reply</button>' . ($r['read_at'] ? '' : '<button class="btn btn2" name="act" value="msg_read" formnovalidate>Mark read</button>') . '<button class="danger" name="act" value="msg_del" formnovalidate onclick="return confirm(\'Delete this message?\')">Delete</button></div></form></div>';
+  }
+  echo '<style>.tag-ok{display:inline-block;margin-inline-start:8px;padding:2px 9px;border-radius:99px;background:rgba(120,200,140,.16);color:#9fe0b0;font-size:12px;font-weight:500;vertical-align:2px}.reply{margin:12px 0 0;padding:10px 14px;border-inline-start:3px solid #9fe0b0;background:rgba(255,255,255,.03);border-radius:0 10px 10px 0}.reply.fail{border-color:#ff8a7a}.rform{margin-top:14px}.rform textarea{min-height:96px}@media (max-width:560px){.rform .row button{flex:1 1 auto}}</style>';
 }
 if ($tab === 'translations') {
   $l = (string)($_GET['lang'] ?? 'bn'); if (!isset(AB_LANGS[$l])) $l = 'bn';

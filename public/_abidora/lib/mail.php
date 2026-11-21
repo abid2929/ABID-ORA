@@ -17,7 +17,7 @@ function ab_mail_hdr(string $s): string { return preg_match('/[^\x20-\x7e]/', $s
 function ab_mail_clean(string $s): string { return trim(preg_replace('/[\r\n\0]+/', ' ', $s)); }
 
 /** Build a MIME message (multipart/alternative when an HTML part is given). Returns [headers, body]. */
-function ab_mail_build(string $fromName, string $fromAddr, string $to, string $subject, string $text, ?string $html, ?string $replyTo): array {
+function ab_mail_build(string $fromName, string $fromAddr, string $to, string $subject, string $text, ?string $html, ?string $replyTo, ?string $auto = null): array {
   $host = ab_mail_host();
   $h = [
     'From: ' . ab_mail_hdr(ab_mail_clean($fromName)) . ' <' . ab_mail_clean($fromAddr) . '>',
@@ -25,8 +25,10 @@ function ab_mail_build(string $fromName, string $fromAddr, string $to, string $s
     'Date: ' . date(DATE_RFC2822),
     'Message-ID: <' . bin2hex(random_bytes(12)) . '@' . $host . '>',
     'X-Mailer: Abidora',
-    'Auto-Submitted: ' . ($replyTo !== null && $html !== null ? 'auto-replied' : 'auto-generated'),
   ];
+  /* a personal reply from the owner is a normal email (no Auto-Submitted header), so mail apps treat it like any other message */
+  $auto ??= ($replyTo !== null && $html !== null ? 'auto-replied' : 'auto-generated');
+  if ($auto !== 'no') $h[] = 'Auto-Submitted: ' . $auto;
   if ($replyTo !== null && filter_var($replyTo, FILTER_VALIDATE_EMAIL)) $h[] = 'Reply-To: ' . ab_mail_clean($replyTo);
   if ($html === null) {
     $h[] = 'Content-Type: text/plain; charset=UTF-8'; $h[] = 'Content-Transfer-Encoding: base64';
@@ -41,12 +43,12 @@ function ab_mail_build(string $fromName, string $fromAddr, string $to, string $s
 }
 
 /** Send one email. $to must already be validated. Returns true when the transport accepted it. */
-function ab_mail_send(string $to, string $subject, string $text, ?string $html = null, ?string $replyTo = null, string $fromName = 'Abidora'): bool {
+function ab_mail_send(string $to, string $subject, string $text, ?string $html = null, ?string $replyTo = null, string $fromName = 'Abidora', ?string $auto = null): bool {
   if (!filter_var($to, FILTER_VALIDATE_EMAIL)) return false;
   $smtp = ab_config()['smtp'] ?? null;
   $useSmtp = is_array($smtp) && !empty($smtp['host']) && !empty($smtp['user']) && !empty($smtp['pass']);
   $from = $useSmtp ? (string)$smtp['user'] : 'universe@' . ab_mail_host();
-  [$h, $body] = ab_mail_build($fromName, $from, $to, $subject, $text, $html, $replyTo);
+  [$h, $body] = ab_mail_build($fromName, $from, $to, $subject, $text, $html, $replyTo, $auto);
   if ($useSmtp) {
     try { return ab_smtp_send($smtp, $from, $to, ab_mail_hdr(ab_mail_clean($subject)), $h, $body); }
     catch (Throwable $e) { error_log('abidora smtp: ' . $e->getMessage()); return false; }
@@ -141,4 +143,41 @@ function ab_autoreply_allowed(string $email): bool {
   if ((int)$s->fetchColumn() >= 30) return false;
   $db->prepare('INSERT INTO ab_throttle (k, created_at) VALUES (?, ?)')->execute([$k, ab_now()]);
   return true;
+}
+
+/** 0.9.15: the owner's own reply to a contact message, written in Admin > Messages.
+    Sent in the same dark Abidora frame as the "message from the universe" email: his words, his name,
+    then the visitor's original message quoted below. Returns [subject, text, html]. */
+function ab_owner_reply(string $toName, string $reply, string $original, string $sentAt, string $signName): array {
+  $e = fn(string $s) => htmlspecialchars($s, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+  $br = fn(string $s) => nl2br($e($s), false);
+  $site = (string)(ab_config()['base'] ?? ''); $host = ab_mail_host();
+  $subj = 'Re: your message to Abidora';
+  $quoted = preg_replace('/^/m', '> ', $original);
+  $text = "✦ A REPLY FROM ABIDORA\n\n" . $reply . "\n\n— " . $signName . "\nFounder, Abidora" . ($site !== '' ? "\n" . $site : '')
+        . "\n\nOn " . $sentAt . ' UTC, ' . $toName . " wrote:\n" . $quoted . "\n\nYou can reply to this email directly.\n";
+  $stars = '';
+  foreach ([[6, 20, .9], [18, 64, .5], [9, 78, .7], [24, 38, .4], [14, 90, .6], [4, 52, .5]] as [$t, $l, $o]) $stars .= '<div style="position:absolute;top:' . $t . 'px;left:' . $l . '%;width:2px;height:2px;border-radius:2px;background:#fff;opacity:' . $o . '"></div>';
+  $sans = 'font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif';
+  $html = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><title>' . $e($subj) . '</title></head>'
+    . '<body style="margin:0;padding:0;background:#07060b">'
+    . '<div style="display:none;max-height:0;overflow:hidden">' . $e(mb_substr($reply, 0, 120)) . '</div>'
+    . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#07060b;background-image:radial-gradient(60% 50% at 30% 0%,#3a1a3f 0%,rgba(7,6,11,0) 70%),radial-gradient(50% 40% at 90% 10%,#3b2a12 0%,rgba(7,6,11,0) 70%)"><tr><td align="center" style="padding:40px 16px">'
+    . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;border:1px solid rgba(240,228,210,.14);border-radius:18px;background:#0f0d14;overflow:hidden">'
+    . '<tr><td style="position:relative;padding:34px 34px 8px;font-family:Georgia,\'Times New Roman\',serif;color:#f0e6d6">' . $stars
+    . '<div style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#e8b46a">✦ A reply from Abidora</div>'
+    . '<div style="font-size:34px;line-height:1.05;margin:14px 0 6px;letter-spacing:-.01em">Abidora</div>'
+    . '<div style="height:1px;background:linear-gradient(90deg,#d6568c,#e8b46a,rgba(232,180,106,0));margin:18px 0 22px"></div></td></tr>'
+    . '<tr><td style="padding:0 34px;' . $sans . ';font-size:16px;line-height:1.65;color:#e6ddd0">'
+    . '<div style="margin:0 0 24px">' . $br($reply) . '</div>'
+    . '<p style="margin:0 0 2px;font-family:Georgia,serif;font-style:italic;font-size:18px;color:#e8b46a">— ' . $e($signName) . '</p>'
+    . '<p style="margin:0 0 26px;font-size:13px;color:#8f8676">Founder, Abidora</p>'
+    . '<div style="margin:0 0 26px;padding:14px 16px;border-left:2px solid rgba(232,180,106,.45);background:rgba(240,228,210,.04);border-radius:0 10px 10px 0;font-size:14px;line-height:1.55;color:#a89f92">'
+    . '<div style="margin:0 0 6px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#7d7568">Your message · ' . $e($sentAt) . ' UTC</div>'
+    . $br($original) . '</div>'
+    . ($site !== '' ? '<p style="margin:0 0 30px"><a href="' . $e($site) . '" style="display:inline-block;padding:13px 24px;border-radius:999px;background:#f0e6d6;color:#0f0d14;text-decoration:none;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase">Visit Abidora →</a></p>' : '')
+    . '</td></tr>'
+    . '<tr><td style="padding:18px 34px 26px;border-top:1px solid rgba(240,228,210,.1);' . $sans . ';font-size:12px;line-height:1.5;color:#7d7568">You can reply to this email directly. · ' . $e($host) . '</td></tr>'
+    . '</table></td></tr></table></body></html>';
+  return [$subj, $text, $html];
 }
