@@ -84,7 +84,8 @@ if ($act !== '') {
       $own = (string)(ab_setting('notify_email', '') ?? ''); $own = filter_var($own, FILTER_VALIDATE_EMAIL) ? $own : null;
       $sign = (string)(ab_site()['name'] ?? 'Abid Islam'); $sign = $sign !== '' ? $sign : 'Abid Islam';
       [$subj, $text, $html] = ab_invite($lang, $sign);
-      $extra = $own ? ['List-Unsubscribe: <mailto:' . $own . '?subject=STOP>'] : [];
+      /* 0.9.18 (owner wants invites in the Primary tab): no bulk-mail header; a personal invite says "reply STOP" in its footer instead, and only up to 30 a day go out */
+      $extra = [];
       $sent = []; $skip = [];
       $recent = ab_db()->prepare('SELECT COUNT(*) FROM ab_invites WHERE ok=1 AND email=? AND created_at > ?');
       $log = ab_db()->prepare('INSERT INTO ab_invites (email, lang, sent_by, ok, note, created_at) VALUES (?,?,?,?,?,?)');
@@ -152,6 +153,15 @@ if ($act !== '') {
       if (!password_verify((string)$_POST['old'], (string)$s->fetchColumn())) go('tab=settings', 'Current password is wrong.', false);
       if (mb_strlen((string)$_POST['new']) < 10) go('tab=settings', 'New password must be at least 10 characters.', false);
       ab_db()->prepare('UPDATE ab_users SET pass_hash=? WHERE id=?')->execute([password_hash((string)$_POST['new'], PASSWORD_DEFAULT), $me['id']]); ab_audit($who, 'password_change'); go('tab=settings', 'Password changed.');
+    case 'ai_partner':
+      if (($me['role'] ?? '') !== 'owner') break;
+      /* 0.9.18: the private word Abid gives his special person. Only its hash is kept, so nobody can read it back, not even here. */
+      require_once AB_DIR . '/lib/ai.php';
+      if (!empty($_POST['m_clear'])) { ab_set_setting('partner_secret_h', ''); ab_audit($who, 'partner_word_clear'); go('tab=ai', 'Private word removed. Special mode is off until a new word is saved.'); }
+      $w = ab_ai_norm((string)($_POST['m_word'] ?? ''));
+      if (mb_strlen($w) < 6 || count(explode(' ', $w)) > 6) go('tab=ai', 'Use a private word or short phrase of at least 6 letters (at most 6 words). Nothing was changed.', false);
+      ab_set_setting('partner_secret_h', hash('sha256', $w)); ab_audit($who, 'partner_word_set');
+      go('tab=ai', 'Private word saved. Give it only to that one person.');
     case 'ai_save':
       if (!can($me, 'ai')) break;
       /* Abidora AI providers. Keys live only in the private config file; an empty key field keeps the saved key. */
@@ -382,6 +392,14 @@ if ($tab === 'ai') {
   echo '<h2>Backup provider (optional, OpenAI-compatible)</h2><p class="note">Used when Gemini is over its free limit or down. Groq: address https://api.groq.com/openai/v1, model openai/gpt-oss-120b, free key at console.groq.com. OpenRouter: https://openrouter.ai/api/v1, a model ending in :free.</p><label>Address</label><input name="o_base" value="' . ab_h((string)($o['base'] ?? '')) . '" placeholder="https://api.groq.com/openai/v1"><label>Model</label><input name="o_model" value="' . ab_h((string)($o['model'] ?? '')) . '" placeholder="openai/gpt-oss-120b"><label>API key' . $mask($o) . '</label><input name="o_key" type="password" autocomplete="off">' . ($o ? '<label class="row" style="color:var(--bone)"><input type="checkbox" name="o_del" value="1" style="width:auto"> Remove the backup provider</label>' : '') . '<label>Ask first</label><select name="order"><option value="g">Gemini, then backup</option><option value="o"' . ($first === 'openai' ? ' selected' : '') . '>Backup, then Gemini</option></select>';
   echo '<h2>Limits</h2><label>Questions per day for the whole site</label><input name="cap" type="number" min="1" value="' . (int)($a['daily_cap'] ?? 400) . '"><label>Per visitor per hour</label><input name="iph" type="number" min="1" value="' . (int)($a['ip_hour'] ?? 30) . '"><label>Per visitor per day</label><input name="ipd" type="number" min="1" value="' . (int)($a['ip_day'] ?? 120) . '">';
   echo '<label class="row" style="color:var(--bone)"><input type="checkbox" name="test" value="1" style="width:auto" checked> Test each provider after saving</label><p><button>Save AI settings</button></p></form>';
+  if (($me['role'] ?? '') === 'owner') {   /* 0.9.18: the special person's private word */
+    $mset = ab_setting('partner_secret_h', '') !== '';
+    echo '<form method="post" class="card" style="max-width:720px">' . $csrf . '<input type="hidden" name="act" value="ai_partner"><h2>Special person’s private word</h2>'
+      . '<p class="note">Abidora AI switches to the special mode for your partner only when someone types this word in the chat. Just saying the name is not enough. Only a fingerprint (hash) of the word is saved, so it cannot be read back. Status: ' . ($mset ? '<b class="ok">set</b>' : '<b class="warn">not set</b>') . '</p>'
+      . '<label>New private word or short phrase (at least 6 letters)</label><input name="m_word" type="password" autocomplete="new-password" spellcheck="false">'
+      . ($mset ? '<label class="row" style="color:var(--bone)"><input type="checkbox" name="m_clear" value="1" style="width:auto"> Remove the word (turn special mode off)</label>' : '')
+      . '<p><button>Save private word</button></p></form>';
+  }
   /* ---- Abidora AI tools: web search, live crypto, images ---- */
   require_once AB_DIR . '/lib/tools.php'; $tc = ab_tools_cfg(); $tr = (array)(ab_config()['tools'] ?? []);
   $cnt = function (string $k) { try { $q = ab_db()->prepare('SELECT COUNT(*) FROM ab_throttle WHERE k = ? AND created_at > ?'); $q->execute([$k, gmdate('Y-m-d H:i:s', time() - 86400)]); return (int)$q->fetchColumn(); } catch (Throwable) { return 0; } };

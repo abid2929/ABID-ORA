@@ -10,3 +10,5 @@ installed.lock
 .env*
 *.log
 *.zip
+# private people list (server only)
+public/_abidora/private/
