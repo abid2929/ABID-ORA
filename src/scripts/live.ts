@@ -53,6 +53,7 @@ export async function startLive(api: string, lang: string, voice: 'm' | 'f', kno
 
   const outGain = ctx.createGain(); const an = ctx.createAnalyser(); an.fftSize = 1024; outGain.connect(an); an.connect(ctx.destination);
   const buf = new Float32Array(1024);
+  let open = false, hot = 0, quietN = 0, pre: string[] = [];
   let closed = false, muted = false, ready = false, next = 0, srcs: AudioBufferSourceNode[] = [], drop = false;
   /* backup for the remember_name tool: if the visitor plainly says their name, keep it even when the model forgets the tool */
   let named = !!know.call;
@@ -68,7 +69,19 @@ export async function startLive(api: string, lang: string, voice: 'm' | 'f', kno
     stream.getTracks().forEach((t) => t.stop()); srcs.forEach((s) => { try { s.stop(); } catch { /* */ } }); srcs = [];
     unwake(); void ctx.close().catch(() => {});
   };
-  const flush = () => { srcs.forEach((s) => { try { s.stop(); } catch { /* */ } }); srcs = []; next = 0; };
+  const flush = () => { srcs.forEach((s) => { try { s.stop(); } catch { /* */ } }); srcs = []; next = 0; pend = []; pendDur = 0; buffering = true; if (pendT) { clearTimeout(pendT); pendT = 0; } };
+  /* 0.9.20 (owner: the voice stops in the middle of a sentence): Google sends the voice in bursts, about as fast as it is
+     spoken, with gaps of up to 1.6 s (measured). Playing each piece the moment it arrives made every gap a break in the
+     sentence. Now a short reserve is collected first; if the reserve still runs dry once, the next reserve is bigger
+     for the rest of the call (a slow phone network learns its own size). */
+  let pend: AudioBuffer[] = [], pendDur = 0, buffering = true, pendT = 0, cushion = 0.45;
+  const endedOne = (s: AudioBufferSourceNode) => { srcs = srcs.filter((x) => x !== s); if (bye) { byeSaid = true; if (done) { byeNow(); return; } } if (!srcs.length && !pend.length && !closed && hand) { const h2 = hand; hand = null; ev.handover?.(h2); return; } if (!srcs.length && !pend.length && !closed && done) ev.state('listen'); };
+  const play = () => {
+    if (pendT) { clearTimeout(pendT); pendT = 0; } buffering = false; if (closed || !pend.length) return;
+    wake(); let at = Math.max(next, ctx.currentTime + 0.04);
+    for (const ab of pend) { const s = ctx.createBufferSource(); s.buffer = ab; s.connect(outGain); s.start(at); at += ab.duration; srcs.push(s); s.onended = () => endedOne(s); }
+    next = at; pend = []; pendDur = 0;
+  };
 
   /* microphone -> 16 kHz PCM -> Gemini */
   try {
@@ -79,6 +92,18 @@ export async function startLive(api: string, lang: string, voice: 'm' | 'f', kno
     node.port.onmessage = (e) => {
       if (closed || muted) return;
       const msg = JSON.stringify({ realtimeInput: { audio: { data: b64(e.data as ArrayBuffer), mimeType: 'audio/pcm;rate=16000' } } });
+      /* 0.9.20: send the microphone only when someone is talking. Silence is not sent (it was about 2.5 MB a minute
+         on mobile data), and while the AI itself is speaking only a clearly louder voice goes through, so the phone's
+         own speaker sound cannot "interrupt" the answer and cut it off. 0.4 s before the voice is kept, so no word is lost. */
+      const pcm = new Int16Array(e.data as ArrayBuffer); let q = 0; for (let i = 0; i < pcm.length; i += 4) q += (pcm[i] / 32768) ** 2;
+      const rms = Math.sqrt(q / (pcm.length / 4)), talking = srcs.length > 0 || pend.length > 0;
+      if (ready && ws.readyState === 1) {
+        const loud = rms > (talking ? 0.045 : 0.008);
+        hot = loud ? hot + 1 : 0;
+        if (loud && (!talking || hot >= 2)) { if (!open) { open = true; pre.forEach((m) => ws.send(m)); } pre = []; quietN = 0; }
+        else if (open && ++quietN > (talking ? 3 : 12)) { open = false; ws.send(JSON.stringify({ realtimeInput: { audioStreamEnd: true } })); }
+        if (!open) { pre.push(msg); if (pre.length > 4) pre.shift(); return; }
+      }
       if (!ready || ws.readyState !== 1) { early.push(msg); if (early.length > 30) early.shift(); return; }   // keep the first 3 s spoken while connecting
       ws.send(msg);
     };
@@ -123,16 +148,18 @@ export async function startLive(api: string, lang: string, voice: 'm' | 'f', kno
       const a = p.inlineData; if (!a?.data || drop) continue;
       const raw = atob(a.data); const n = raw.length >> 1; const ab = ctx.createBuffer(1, n, 24000); const ch = ab.getChannelData(0);
       for (let i = 0; i < n; i++) { let v = raw.charCodeAt(2 * i) | (raw.charCodeAt(2 * i + 1) << 8); if (v >= 0x8000) v -= 0x10000; ch[i] = v / 32768; }
-      wake(); done = false; const s = ctx.createBufferSource(); s.buffer = ab; s.connect(outGain);
-      /* small cushion at the start (or after a gap) so the voice does not stutter */
-      const at = next > ctx.currentTime ? next : ctx.currentTime + (srcs.length ? 0.08 : 0.22);
-      s.start(at); next = at + ab.duration; srcs.push(s);
-      s.onended = () => { srcs = srcs.filter((x) => x !== s); if (bye) { byeSaid = true; if (done) { byeNow(); return; } } if (!srcs.length && !closed && hand) { const h2 = hand; hand = null; ev.handover?.(h2); return; } if (!srcs.length && !closed && done) ev.state('listen'); };
+      /* ran dry in the middle of an answer: wait for a bigger reserve this time and from now on */
+      if (!done && !buffering && !srcs.length && next <= ctx.currentTime + 0.02) { buffering = true; cushion = Math.min(1.6, cushion + 0.35); }
+      done = false; pend.push(ab); pendDur += ab.duration;
+      if (!buffering) play();
+      else if (pendDur >= cushion) play();
+      else if (!pendT) pendT = window.setTimeout(play, 1200);      // never hold a short answer back for long
       ev.state('speak');
     }
-    if (sc.turnComplete || sc.interrupted) { drop = false; done = true; }
+    if (sc.turnComplete && pend.length) play();          // the answer is complete: play what is left now
+    if (sc.turnComplete || sc.interrupted) { drop = false; done = true; buffering = true; }
     if (sc.turnComplete && bye) setTimeout(byeNow, 300);
-    if (sc.turnComplete) { if (heard) { catchName(heard); ev.heard(heard, true); heard = ''; } if (said) { ev.said(said, true); said = ''; } if (!srcs.length) ev.state('listen'); }
+    if (sc.turnComplete) { if (heard) { catchName(heard); ev.heard(heard, true); heard = ''; } if (said) { ev.said(said, true); said = ''; } if (!srcs.length && !pend.length) ev.state('listen'); }
   };
 
   return {

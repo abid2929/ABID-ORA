@@ -38,10 +38,12 @@ $in = json_decode((string)file_get_contents('php://input', false, null, 0, 16000
 $lang = (string)($in['lang'] ?? 'en'); if (!isset(AB_LANGS[$lang])) $lang = 'en';
 /* backup voices (owner, 20 Nov: "keep another way"): each Google live model has its own free limit, so when one is
    used up or down, the page asks again with alt=1, 2, ... and gets the next model. */
-$models = array_values(array_unique(array_merge([$cfg['model']], ['gemini-2.5-flash-native-audio-preview-12-2025', 'gemini-2.5-flash-native-audio-latest', 'gemini-2.5-flash-native-audio-preview-09-2025'])));
+$models = array_values(array_unique(array_merge([$cfg['model']], ['gemini-2.5-flash-native-audio-latest', 'gemini-2.5-flash-native-audio-preview-12-2025', 'gemini-2.5-flash-native-audio-preview-09-2025'])));
 /* owner, 22 Nov: "the girl's photo comes with a boy's voice". Measured: on the 3.1 live model the female voices sit
    around 190-210 Hz, close to the male voice (~165 Hz); on the 2.5 native-audio models the same voice is ~240-260 Hz,
-   clearly a young woman. So the female call tries the 2.5 native-audio models first. */
+   clearly a young woman. So the female call tries the 2.5 native-audio models first.
+   0.9.20 (owner: the girl starts late and stops halfway): measured 22 Nov, '-latest' starts speaking in 1.3-1.7 s and
+   streams about as fast as it speaks; '-12-2025' needed 2.3-5 s and fell behind. So '-latest' goes first. */
 if (($in['voice'] ?? '') === 'f') $models = array_values(array_merge(array_filter($models, fn($m) => str_contains($m, 'native-audio')), array_filter($models, fn($m) => !str_contains($m, 'native-audio'))));
 $alt = max(0, (int)($in['alt'] ?? 0));
 if ($alt >= count($models)) ab_json_out(['ok' => false, 'code' => 'quota', 'alts' => count($models)], 503);
@@ -94,7 +96,9 @@ $req = [
   'newSessionExpireTime' => gmdate('Y-m-d\TH:i:s\Z', $now + 120),
   'bidiGenerateContentSetup' => [
     'model' => 'models/' . $cfg['model'],
-    'generationConfig' => ['responseModalities' => ['AUDIO'], 'temperature' => 0.6, 'speechConfig' => ['voiceConfig' => ['prebuiltVoiceConfig' => ['voiceName' => $voice]]]],
+    'generationConfig' => ['responseModalities' => ['AUDIO'], 'temperature' => 0.6, 'speechConfig' => ['voiceConfig' => ['prebuiltVoiceConfig' => ['voiceName' => $voice]]]]
+      /* 0.9.20 (owner: both voices answer slowly): the 2.5 voice first "thinks" for seconds before it speaks; turn that off */
+      + (str_contains($cfg['model'], 'native-audio') ? ['thinkingConfig' => ['thinkingBudget' => 0]] : []),
     'systemInstruction' => ['parts' => [['text' => $system]]],
     'inputAudioTranscription' => new stdClass(), 'outputAudioTranscription' => new stdClass(),
     /* one real tool: when the visitor says their name, the page saves it in their own browser for the next call and chat */
