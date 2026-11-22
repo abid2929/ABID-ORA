@@ -357,3 +357,5 @@ html.lite .aiwel h2{background:none;color:var(--bone)}
 @media (max-width:820px){.aicomp.typing .aiatt,.aicomp.typing .aiar{display:none}}
 /* 0.9.17 (owner): Messenger-style typing bubble */
 .aidots{padding:13px 16px;border-radius:20px 20px 20px 6px;background:rgba(240,228,210,.07);border:1px solid var(--line)}
+/* 0.9.18 (owner, phone): while the voice call is open, the site bar (logo, Back, language, Menu) and the phone tab bar hide, so nothing sits on top of the call header */
+html:has(.aicall:not([hidden])) :is(.bar,.barbg,#fback,.aifab,.ptabs,.tabbar,.mtab){visibility:hidden !important}
