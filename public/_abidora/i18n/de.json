@@ -2241,6 +2241,8 @@
  "ai.vc.lf.origin": "Diese Seite darf keine Anrufe starten.",
  "ai.vc.lf.retry": "Zum erneuten Versuch auf den Kreis tippen",
  "ai.vc.lf.switch": "Wechsel zu einer Ersatzstimme…",
+  "ai.vc.resumed": "Du bist zurück, der Anruf hört wieder zu.",
+  "ai.vc.bgnote": "Handys stoppen das Mikrofon, wenn du den Browser verlässt. Komm zurück und der Anruf geht weiter.",
  "ai.t.search": "Suche im Web",
  "ai.t.searched": "Websuche · {n} Quellen",
  "ai.t.sfail": "Die Websuche hat gerade nicht funktioniert",

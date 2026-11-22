@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /_abidora/
+Disallow: /admin/
+Disallow: /api/
+
+Sitemap: https://abidora.boostnixmedia.com/sitemap.xml

@@ -2241,6 +2241,8 @@
  "ai.vc.lf.origin": "此页面不允许发起通话。",
  "ai.vc.lf.retry": "点按圆圈重试",
  "ai.vc.lf.switch": "正在切换到备用语音…",
+  "ai.vc.resumed": "你回来了，通话重新开始聆听。",
+  "ai.vc.bgnote": "离开浏览器时手机会关闭麦克风。回来后通话会继续。",
  "ai.t.search": "正在搜索网络",
  "ai.t.searched": "已搜索网络 · {n} 个来源",
  "ai.t.sfail": "网络搜索暂时不可用",

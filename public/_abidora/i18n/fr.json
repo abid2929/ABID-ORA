@@ -2241,6 +2241,8 @@
  "ai.vc.lf.origin": "Cette page ne peut pas lancer d'appels.",
  "ai.vc.lf.retry": "Touchez le cercle pour réessayer",
  "ai.vc.lf.switch": "Passage à une voix de secours…",
+  "ai.vc.resumed": "Vous êtes revenu, l’appel écoute à nouveau.",
+  "ai.vc.bgnote": "Le téléphone coupe le micro quand vous quittez le navigateur. Revenez et l’appel reprend.",
  "ai.t.search": "Recherche sur le web",
  "ai.t.searched": "Recherche web · {n} sources",
  "ai.t.sfail": "La recherche web n’a pas fonctionné",

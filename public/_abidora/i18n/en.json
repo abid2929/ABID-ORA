@@ -2240,6 +2240,8 @@
  "ai.vc.lf.origin": "This page is not allowed to start calls.",
  "ai.vc.lf.retry": "Tap the circle to try again",
  "ai.vc.lf.switch": "Switching to a backup voice…",
+  "ai.vc.resumed": "You came back, the call is listening again.",
+  "ai.vc.bgnote": "Phones stop the microphone when you leave the browser. Come back and the call resumes.",
  "ai.t.search": "Searching the web",
  "ai.t.searched": "Searched the web · {n} sources",
  "ai.t.sfail": "Web search did not work right now",

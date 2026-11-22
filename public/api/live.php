@@ -21,7 +21,7 @@ function ab_live_cfg(): array {
     'model' => preg_match('~^[a-z0-9.\-]{3,60}$~', (string)($t['model'] ?? '')) ? (string)$t['model'] : 'gemini-3.1-flash-live-preview',
     /* one fixed voice on every device (owner, 20 Nov: device voices were male on one phone and female on another) */
     'voice' => preg_match('~^[A-Za-z]{2,20}$~', (string)($t['voice'] ?? '')) ? (string)$t['voice'] : 'Puck',          // male: Puck, young and upbeat (owner 20 Nov asked for younger, livelier voices)
-    'voice_f' => preg_match('~^[A-Za-z]{2,20}$~', (string)($t['voice_f'] ?? '')) ? (string)$t['voice_f'] : 'Leda',      // female: Leda, youthful; still an adult voice, personas are never presented as minors
+    'voice_f' => preg_match('~^[A-Za-z]{2,20}$~', (string)($t['voice_f'] ?? '')) ? (string)$t['voice_f'] : 'Achernar',  // female: Achernar, soft and clearly female (owner 22 Nov: Leda sounded like a boy on the 3.1 live model; measured ~200 Hz vs ~225 Hz); still an adult voice
     'ip_hour' => max(1, (int)($t['ip_hour'] ?? 200)),   // calls per visitor per hour (owner, 20 Nov: 200)
     'minutes' => max(1, min(15, (int)($t['minutes'] ?? 10))),
     'silence' => max(200, min(2000, (int)($t['silence_ms'] ?? 500))),
@@ -39,6 +39,10 @@ $lang = (string)($in['lang'] ?? 'en'); if (!isset(AB_LANGS[$lang])) $lang = 'en'
 /* backup voices (owner, 20 Nov: "keep another way"): each Google live model has its own free limit, so when one is
    used up or down, the page asks again with alt=1, 2, ... and gets the next model. */
 $models = array_values(array_unique(array_merge([$cfg['model']], ['gemini-2.5-flash-native-audio-preview-12-2025', 'gemini-2.5-flash-native-audio-latest', 'gemini-2.5-flash-native-audio-preview-09-2025'])));
+/* owner, 22 Nov: "the girl's photo comes with a boy's voice". Measured: on the 3.1 live model the female voices sit
+   around 190-210 Hz, close to the male voice (~165 Hz); on the 2.5 native-audio models the same voice is ~240-260 Hz,
+   clearly a young woman. So the female call tries the 2.5 native-audio models first. */
+if (($in['voice'] ?? '') === 'f') $models = array_values(array_merge(array_filter($models, fn($m) => str_contains($m, 'native-audio')), array_filter($models, fn($m) => !str_contains($m, 'native-audio'))));
 $alt = max(0, (int)($in['alt'] ?? 0));
 if ($alt >= count($models)) ab_json_out(['ok' => false, 'code' => 'quota', 'alts' => count($models)], 503);
 $cfg['model'] = $models[$alt];

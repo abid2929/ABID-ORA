@@ -13,7 +13,7 @@ export type LiveEv = {
   bye?: () => void;                                     // the visitor asked to hang up; called after the goodbye has played
   handover?: (to: 'm' | 'f') => void;                   // the visitor asked for the other voice; called once this voice has finished speaking
 };
-export type Live = { stop(): void; mute(m: boolean): void; hush(): void; level(): number };
+export type Live = { stop(): void; mute(m: boolean): void; hush(): void; level(): number; alive(): boolean };
 
 const WORKLET = `class P extends AudioWorkletProcessor{constructor(){super();this.r=sampleRate/16000;this.p=0;this.b=new Int16Array(1600);this.n=0}
 process(i){const c=i[0]&&i[0][0];if(!c)return true;let k=this.p;for(;k<c.length;k+=this.r){const s=Math.max(-1,Math.min(1,c[k|0]));this.b[this.n++]=s<0?s*32768:s*32767;if(this.n===this.b.length){this.port.postMessage(this.b.buffer.slice(0));this.n=0}}
@@ -140,6 +140,8 @@ export async function startLive(api: string, lang: string, voice: 'm' | 'f', kno
     mute(m: boolean) { muted = m; stream.getAudioTracks().forEach((t) => { t.enabled = !m; }); },
     /* the visitor tapped the circle: stop talking now (the model also stops by itself when the visitor speaks) */
     hush() { flush(); drop = true; if (said) { ev.said(said, true); said = ''; } ev.state('listen'); },   // the rest of this answer is dropped
+    /* 0.9.19: still working after the phone was in the background? (socket open, microphone not stopped by the phone) */
+    alive() { const t = stream.getAudioTracks()[0]; return !closed && ws.readyState === 1 && ctx.state !== 'closed' && !!t && t.readyState === 'live' && !t.muted; },
     level() { an.getFloatTimeDomainData(buf); let q = 0; for (let i = 0; i < buf.length; i++) q += buf[i] * buf[i]; return Math.min(1, Math.sqrt(q / buf.length) * 5); },
   };
 }

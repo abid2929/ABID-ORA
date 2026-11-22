@@ -2241,6 +2241,8 @@
  "ai.vc.lf.origin": "Esta página no puede iniciar llamadas.",
  "ai.vc.lf.retry": "Toca el círculo para reintentar",
  "ai.vc.lf.switch": "Cambiando a una voz de respaldo…",
+  "ai.vc.resumed": "Has vuelto, la llamada vuelve a escuchar.",
+  "ai.vc.bgnote": "El móvil detiene el micrófono al salir del navegador. Vuelve y la llamada continúa.",
  "ai.t.search": "Buscando en la web",
  "ai.t.searched": "Búsqueda web · {n} fuentes",
  "ai.t.sfail": "La búsqueda web no funcionó ahora",

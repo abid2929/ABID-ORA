@@ -356,7 +356,11 @@ input.addEventListener('paste', (e) => { const fs = Array.from(e.clipboardData?.
 /* ---------- composer ---------- */
 const grow = () => { input.style.height = 'auto'; input.style.height = Math.min(200, input.scrollHeight) + 'px'; };
 input.addEventListener('input', grow);
-input.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); submit(input.value); } });
+/* 0.9.19 (owner: "while typing, a message suddenly goes into the chat"). Root cause: on phones the keyboard's Enter key
+   sent the half-typed message (Bengali keyboards also send Enter while still composing, keyCode 229). On touch phones
+   Enter now makes a new line and only the send button sends, like WhatsApp; on a PC Enter still sends. */
+const touchKb = matchMedia('(hover: none) and (pointer: coarse)');
+input.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing && e.keyCode !== 229 && !touchKb.matches) { e.preventDefault(); submit(input.value); } });
 send.onclick = () => { handsFree = false; if (busy) { abort?.abort(); stopSpeak(); } else submit(input.value); };
 $('#ainew').onclick = newChat;
 $('#aimenu').onclick = () => side.classList.toggle('open');
@@ -661,7 +665,7 @@ let handoff = false;   // the next live session starts as a handed-over call
 let liveAlt = (() => { try { const v = JSON.parse(localStorage.getItem('abidora.ai.livealt') || 'null'); return v && Date.now() - v.t < 3600e3 ? Math.min(3, Math.max(0, v.a | 0)) : 0; } catch { return 0; } })();
 const keepAlt = () => { try { localStorage.setItem('abidora.ai.livealt', JSON.stringify({ a: liveAlt, t: Date.now() })); } catch { /* */ } };
 let liveAlt0 = 0;   // which Google live model to use: 0 = main, 1..3 = backups with their own free limits
-let live: Live | null = null, liveOk = true, liveFail = false, liveGen = 0;   // tried until the server says it is not offered
+let live: Live | null = null, liveOk = true, liveFail = false, liveGen = 0, liveDrop = false, hidAt = 0;   // tried until the server says it is not offered
 fetch(LIVE, { headers: { Accept: 'application/json' } }).then((r) => r.json()).then((j) => { liveOk = !!j.ready; }).catch(() => { liveOk = false; });
 function pushTurn(role: 'user' | 'assistant', text: string) {
   text = text.trim(); if (!text) return;
@@ -692,6 +696,10 @@ function goLive() {
     fail: (code) => {
       if (g !== liveGen) return; live = null; if (!callOn) return;
       if (code === 'mic') { cSt.textContent = T('ai.vc.nomic'); paused2 = true; av?.set('idle'); return; }
+      /* 0.9.19 (owner: "chrome theke bair hoileo sona jabe"): a phone stops the microphone and the connection when the
+         visitor leaves the browser. That is not a broken model, so do not switch to a backup voice: wait, and pick the
+         call up again by itself the moment the visitor comes back (see visibilitychange below). */
+      if (document.hidden || Date.now() - hidAt < 4000) { liveDrop = true; setState('idle'); cSt.textContent = T('ai.vc.bgnote'); return; }
       /* no silent fallback to the old device-voice call: say plainly why the live voice could not start, keep the
          photo, and let a tap on the circle try again (owner, 20 Nov: the call "suddenly" lost its voice and photo) */
       /* "keep another way" (owner, 20 Nov): if this Google model is used up or down, switch to the next one by itself */
@@ -732,7 +740,7 @@ function startCall() {
   if (liveOk && !liveFail) goLive(); else callListen();
 }
 function endCall() {
-  if (!callOn) return; callOn = false; paused2 = false; stopLive(); liveFail = false; av?.photo(null);   // the next call tries the live voice again
+  if (!callOn) return; callOn = false; paused2 = false; stopLive(); liveFail = false; liveDrop = false; av?.photo(null);   // the next call tries the live voice again
   if (busy) abort?.abort(); stopSpeak(); meterOff(); try { rec?.abort(); } catch { /* not running */ }
   callV.hidden = true; document.body.classList.remove('incall'); setState('idle'); cancelAnimationFrame(lvRaf); callB.focus({ preventScroll: true });
 }
@@ -778,6 +786,17 @@ cOrb.onclick = () => { if (!callOn) return; if (liveFail && liveOk) { liveFail =
 cLang.onchange = () => { vs.lang = cLang.value; vs.langSet = true; cLang.classList.remove('hint'); if (live) { stopLive(); saveV(); goLive(); return; } vLang.value = vs.lang; saveV(); fillVoices(); if (listening) { try { rec?.abort(); } catch { /* */ } setTimeout(callListen, 200); } };
 addEventListener('keydown', (e) => { if (e.key === 'Escape' && callOn) endCall(); });
 addEventListener('pagehide', endCall);
+/* 0.9.19: back from another app or tab during a call: if the phone stopped the microphone or the connection,
+   start the live voice again by itself (no greeting, it was open moments ago) and say so in one line */
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) { hidAt = Date.now(); return; }
+  hidAt = Date.now();   // the socket may report its close a moment after we are visible again
+  if (!callOn || paused2) return;
+  const back = () => { cSt.textContent = T('ai.vc.resumed'); };
+  if (live) { if (!live.alive()) { stopLive(); liveDrop = false; goLive(); back(); } return; }
+  if (liveDrop) { liveDrop = false; liveFail = false; goLive(); back(); return; }
+  if (!liveFail && !muted && !busy && !speaking() && !listening) { callListen(); back(); }   // the device-voice call
+});
 
 /* barge-in: while the answer plays, a level meter (echo cancelled) notices when you start talking */
 let mStream: MediaStream | null = null, mCtx: AudioContext | null = null, mRaf = 0, mGen = 0;
