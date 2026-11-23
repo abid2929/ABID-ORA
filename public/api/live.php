@@ -61,7 +61,8 @@ $callIn = mb_substr(trim((string)($in['call'] ?? '')), 0, 40);
 $recent = '';
 /* 0.9.18: the same people rules as the chat (the special person's private word typed in this chat also counts here) */
 $recIn = array_map(fn($m) => ['role' => (($m['role'] ?? '') === 'assistant' ? 'assistant' : 'user'), 'content' => mb_substr((string)($m['content'] ?? ''), 0, 400)], array_slice((array)($in['recent'] ?? []), -10));
-[$personal, $recIn] = ab_ai_personal($recIn);
+[$personal, $recIn] = ab_ai_personal($recIn, (string)($in['vid'] ?? ''));
+if ($callIn === '' && !empty($GLOBALS['ab_ai_partner_name'])) $callIn = (string)$GLOBALS['ab_ai_partner_name'];
 foreach ($recIn as $m) {
   $r = ($m['role'] ?? '') === 'assistant' ? 'You' : 'Visitor'; $c = trim(preg_replace('~\s+~u', ' ', mb_substr((string)($m['content'] ?? ''), 0, 400)));
   if ($c !== '') $recent .= "\n{$r}: {$c}";

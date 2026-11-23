@@ -30,7 +30,7 @@
 - **Phone-first:** app-style tab bar on phones, quality settings (Auto / High / Low) for slower devices.
 - **Admin and installer:** web installer, admin panel, messages and branded emails.
 
-Version **0.9.20** (22 Nov 2026).
+Version **0.9.21** (23 Nov 2026).
 
 ## 🛠️ Stack
 

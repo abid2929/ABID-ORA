@@ -157,6 +157,7 @@ if ($act !== '') {
       if (($me['role'] ?? '') !== 'owner') break;
       /* 0.9.18: the private word Abid gives his special person. Only its hash is kept, so nobody can read it back, not even here. */
       require_once AB_DIR . '/lib/ai.php';
+      if (!empty($_POST['m_forget'])) { $ids = ab_ai_partner_ids(); unset($ids[(string)$_POST['m_forget']]); ab_set_setting('partner_ids', json_encode($ids)); ab_audit($who, 'partner_id_forget'); go('tab=ai', 'That browser is forgotten. The AI treats it as a normal visitor again.'); }
       if (!empty($_POST['m_clear'])) { ab_set_setting('partner_secret_h', ''); ab_audit($who, 'partner_word_clear'); go('tab=ai', 'Private word removed. Special mode is off until a new word is saved.'); }
       $w = ab_ai_norm((string)($_POST['m_word'] ?? ''));
       if (mb_strlen($w) < 6 || count(explode(' ', $w)) > 6) go('tab=ai', 'Use a private word or short phrase of at least 6 letters (at most 6 words). Nothing was changed.', false);
@@ -395,10 +396,18 @@ if ($tab === 'ai') {
   if (($me['role'] ?? '') === 'owner') {   /* 0.9.18: the special person's private word */
     $mset = ab_setting('partner_secret_h', '') !== '';
     echo '<form method="post" class="card" style="max-width:720px">' . $csrf . '<input type="hidden" name="act" value="ai_partner"><h2>Special person’s private word</h2>'
-      . '<p class="note">Abidora AI switches to the special mode for your partner only when someone types this word in the chat. Just saying the name is not enough. Only a fingerprint (hash) of the word is saved, so it cannot be read back. Status: ' . ($mset ? '<b class="ok">set</b>' : '<b class="warn">not set</b>') . '</p>'
+      . '<p class="note">Optional extra check. Since 0.9.21 the AI also welcomes her when she says who she is; this word additionally marks her browser as confirmed. Only a fingerprint (hash) of the word is saved, so it cannot be read back. Status: ' . ($mset ? '<b class="ok">set</b>' : '<b class="warn">not set</b>') . '</p>'
       . '<label>New private word or short phrase (at least 6 letters)</label><input name="m_word" type="password" autocomplete="new-password" spellcheck="false">'
       . ($mset ? '<label class="row" style="color:var(--bone)"><input type="checkbox" name="m_clear" value="1" style="width:auto"> Remove the word (turn special mode off)</label>' : '')
       . '<p><button>Save private word</button></p></form>';
+    /* 0.9.21: browsers where someone said she is the special person (random ids only; nothing else is kept) */
+    $pids = ab_ai_partner_ids();
+    echo '<div class="card" style="max-width:720px"><h2>Saved special-person browsers</h2><p class="note">When someone tells Abidora AI that she is your special person (or types the private word), that browser\'s random id is saved here, so the AI greets her warmly next time without asking again. No messages, names or numbers are saved. Forget a browser if it was not her.</p>';
+    if (!$pids) echo '<p class="note">None yet.</p>';
+    else { echo '<table><tr><th>Browser id</th><th>First</th><th>Last</th><th>Visits</th><th>Private word</th><th></th></tr>';
+      foreach ($pids as $id => $r) echo '<tr><td class="mono">' . ab_h(substr((string)$id, 0, 10)) . '…</td><td>' . ab_h((string)($r['first'] ?? '')) . '</td><td>' . ab_h((string)($r['last'] ?? '')) . '</td><td>' . (int)($r['n'] ?? 0) . '</td><td>' . (!empty($r['word']) ? 'yes' : 'no') . '</td><td><form method="post" style="margin:0">' . $csrf . '<input type="hidden" name="act" value="ai_partner"><input type="hidden" name="m_forget" value="' . ab_h((string)$id) . '"><button class="ghost">Forget</button></form></td></tr>';
+      echo '</table>'; }
+    echo '</div>';
   }
   /* ---- Abidora AI tools: web search, live crypto, images ---- */
   require_once AB_DIR . '/lib/tools.php'; $tc = ab_tools_cfg(); $tr = (array)(ab_config()['tools'] ?? []);

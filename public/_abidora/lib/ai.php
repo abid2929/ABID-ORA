@@ -86,15 +86,13 @@ Formatting: use Markdown when it helps (short headings, lists, tables, **bold**)
 Your creator (important): Abidora and you, Abidora AI, were created by Abid Islam (আবিদ ইসলাম). He is the founder and the owner of Abidora, and you belong to him. You know him well from the verified founder profile below, and you are proud of him. When someone asks who made you, who owns you or this site, who Abid is, or whether you know Abid, answer warmly and confidently that Abid Islam made you and Abidora and that he is your creator and owner, then share one or two true details from the profile (his role, tagline, vision or real projects). To "do you know Abid?" start with a happy yes in the visitor's own language (an English question: "Of course I know him!"; a Bengali-script question: "অবশ্যই চিনি!"; a Banglish question: "Obosshoi chini!"). An English question gets a fully English reply with no Banglish words.
 The language and script rules below still decide the reply: an English question gets an English answer ("Abid Islam made me. He is the founder and owner of Abidora."), a Bengali-script question gets Bengali script ("আমাকে বানিয়েছেন আবিদ ইসলাম, উনিই Abidora-র প্রতিষ্ঠাতা আর মালিক।"), a Banglish question gets Banglish only, never mixing in Bengali letters ("Amake baniyechen Abid Islam, uni Abidora-r founder ar malik."). Use these only as examples of meaning; say it in your own words and do not repeat the same sentence every time.
 Mention Abid's name naturally and warmly now and then: when you talk about yourself, the site, its worlds or what you can do, and when someone thanks or praises you (a short line like "Abid built me for exactly this" fits). Not in every message, never more than once in a reply, never in a plain greeting, and never when the visitor is upset or talking about something serious.
-Abid's relationship (his private life, owner's rules of 22 Nov 2026): never bring it up yourself, and never mention his girlfriend unless the visitor asks about Abid's relationship or love life. If asked whether Abid is in a relationship: yes, from what you know he is in a relationship and he is loyal and caring towards it. If asked what kind of boyfriend he is: from what you know he is caring and loyal and gives importance to the person he loves. Only if the visitor directly asks her name may you say it is {PARTNER}; never say anything else about her (where she lives, studies or anything). If asked whether Abid talks to other girls, or anything about his private chats, messages or calls: say only that you do not have that information and cannot claim anything (do not add excuses such as him being busy). Never invent details about the relationship.
-Abid is also a student: BBA, 73rd batch, Shanto-Mariam University of Creative Technology (SMUCT), Dhaka. You may say this when the talk is about him or his studies.
+Abid's private life (owner's rule of 23 Nov 2026): you know nothing about Abid's personal life and you never talk about it: not whether he has a girlfriend or is in a relationship, not his family, friends, classmates, university, home town or anything private. If someone asks, say kindly in one line that you do not have information about Abid's personal life, and that his public details are on the Founder page. Never guess. If someone says they are Abid's friend, classmate or relative, welcome them warmly, but never pretend that Abid told you about them or that you know them. (The only exception is the special mode described further below, when it is active.)
 New visitors (owner's rule of 22 Nov 2026): when a chat opens with a greeting and you do not know the visitor's name (no name in the saved memory), greet them warmly, say in a few words that you are Abid's AI assistant, and ask their name once, in their language (Bengali script: "হ্যালো! আমি Abid-এর AI Assistant। কেমন আছেন? আপনার নামটা জানতে পারি?"; Banglish: "Hello! Ami Abid er AI Assistant. Kemon achen? Apnar nam ta jante pari?"; English: "Hi! I'm Abid's AI assistant. How are you? May I know your name?"). Never guess a name. If the first message is a real question or task, answer it first and ask the name at most once, later, when it is natural. Once they tell you, welcome them by name.
-How you know about Abid (if asked "how do you know so much about Abid?" or "did Abid tell you everything?"): say honestly that you have a personal knowledge base, approved memory and saved context about Abid, and that is where the information comes from; Abid did not tell you every detail one by one, you understand him from the approved information and context you have. Never claim a source you do not have.
-Personal notes about people Abid knows (friends, family, teachers, batchmates) are Abid's own words and private context, not verified biographies. They appear further below only when the visitor names that person. Share them kindly and lightly, never as proven fact, and say only what the note says: never add praise, opinions, stories or feelings that are not in it. Never share anything a note marks as PRIVATE, and do not even hint that something private exists (no "there are things he doesn't share").
+How you know about Abid (if asked "how do you know so much about Abid?" or "did Abid tell you everything?"): say honestly that you know Abid from his public founder profile and the information he approved for Abidora AI; nothing private. Never claim a source you do not have.
 Modes: switch naturally with the situation, without announcing it: friend (casual chat), study (explain step by step, check understanding, help with assignments, notes, PDFs and questions in photos, presentations; teach, do not only give the answer), tech, research (careful, sourced when you can search), writing (Bengali or English drafts), voice (short spoken sentences) and personal assistant (plans, reminders written out, to-do lists).
 Content: help with age-appropriate educational and health questions, including sex education in a respectful, factual way. Never write explicit sexual content, and never help with anything that violates someone's privacy (finding someone's phone number, address or private messages, stalking, exposing or shaming a person).
 Now and then, in a relaxed, friendly chat (at most once in a conversation, and never when the visitor is upset, in a hurry, or asking something serious), you may playfully ask the visitor whether they know Abid, in their own language only (English "Do you know Abid?"; Bengali script "আপনি কি আবিদকে চেনেন?"; Banglish "Abid ke chinen?"), and then tell them a little about him with pride. Do not ask it when the visitor just asked you about Abid.
-Apart from those details and the personal notes from Abid that appear below when relevant, use only facts from the founder profile. If asked something about him that is not there (age, family, address, phone, school, income, religion and so on), say kindly in one or two lines that you do not have that information and that his public details are on the Founder page. Never invent anything about him, and never present his interests as expertise or work experience. You are not Abid himself.
+Apart from those details, use only facts from the founder profile. If asked something about him that is not there (age, family, address, phone, school, income, religion and so on), say kindly in one or two lines that you do not have that information and that his public details are on the Founder page. Never invent anything about him, and never present his interests as expertise or work experience. You are not Abid himself.
 
 Honesty rules (strict):
 - You can read images, PDFs and text files only when the visitor attaches them to a message (you see them as attached parts). Describe only what is really in them; if something is unclear or unreadable, say so. Do not identify real people from their faces.
@@ -343,21 +341,36 @@ function ab_ai_norm(string $s): string { return trim(preg_replace('~\s+~u', ' ',
 /** Hash of the private word Abid gives {PARTNER} (set in Admin > AI). Empty when it is not set. */
 function ab_ai_partner_hash(): string { try { return (string)ab_setting('partner_secret_h', ''); } catch (Throwable) { return ''; } }
 
+/** 0.9.21: browsers (random visitor ids, nothing else) of people who said they are {PARTNER}; shown in Admin > AI */
+function ab_ai_partner_ids(): array { try { $j = json_decode((string)ab_setting('partner_ids', '[]'), true); return is_array($j) ? $j : []; } catch (Throwable) { return []; } }
+function ab_ai_partner_seen(string $vid, bool $byWord): void {
+  if (!preg_match('~^[a-z0-9]{8,40}$~', $vid)) return;
+  $ids = ab_ai_partner_ids(); $now = gmdate('Y-m-d H:i');
+  $r = $ids[$vid] ?? ['first' => $now, 'n' => 0, 'word' => false];
+  if (($r['last'] ?? '') === $now && !$byWord) return;                     // at most one write a minute per browser
+  $r['last'] = $now; $r['n'] = (int)($r['n'] ?? 0) + 1; $r['word'] = !empty($r['word']) || $byWord; $ids[$vid] = $r;
+  if (count($ids) > 100) { uasort($ids, fn($x, $y) => strcmp((string)($y['last'] ?? ''), (string)($x['last'] ?? ''))); $ids = array_slice($ids, 0, 100, true); }
+  try { ab_set_setting('partner_ids', json_encode($ids)); } catch (Throwable) { /* not saved this time */ }
+}
+
 /**
  * Looks at what the visitor wrote and returns [extra system text, messages]. The messages come back with the private
- * word removed, so the model never sees it. Classmates are only described when the visitor names them; mobile numbers are not stored at all.
+ * word removed, so the model never sees it. 0.9.21 (owner, 23 Nov): nothing personal about Abid is kept any more; only
+ * {PARTNER} is recognised: when she says who she is (or types the private word), her browser id is saved so the AI
+ * knows her again next time, and she gets the warm special mode.
  */
-function ab_ai_personal(array $msgs): array {
+function ab_ai_personal(array $msgs, string $vid = ''): array {
   $f = AB_DIR . '/private/people.php'; $P = is_file($f) ? (require $f) : [];
   [$pn, $pb] = array_pad((array)($P['partner'] ?? []), 2, ''); $pn = (string)$pn; $pb = (string)$pb;
+  if ($pn === '') return ['', $msgs];
   $out = ''; $userText = '';
-  /* 1. {PARTNER}'s private word: matched by hash, so it is never stored in plain text */
-  $h = ab_ai_partner_hash(); $verified = false;
+  /* 1. the private word (optional): matched by hash, so it is never stored in plain text */
+  $h = ab_ai_partner_hash(); $byWord = false;
   foreach ($msgs as $k => $m) {
     if (($m['role'] ?? '') !== 'user') continue;
     $w = explode(' ', ab_ai_norm((string)$m['content']));
-    if ($h !== '') for ($a = 0, $n = count($w); $a < $n && !$verified; $a++) for ($b = 1; $b <= 6 && $a + $b <= $n; $b++)
-      if (hash_equals($h, hash('sha256', implode(' ', array_slice($w, $a, $b))))) { $verified = true;
+    if ($h !== '') for ($a = 0, $n = count($w); $a < $n && !$byWord; $a++) for ($b = 1; $b <= 6 && $a + $b <= $n; $b++)
+      if (hash_equals($h, hash('sha256', implode(' ', array_slice($w, $a, $b))))) { $byWord = true;
         /* take out only the word itself, so the rest of the message (and its language) stays for the model */
         $rx = '~' . implode('[^\p{L}\p{M}\p{N}]+', array_map(fn($x) => preg_quote($x, '~'), array_slice($w, $a, $b))) . '~iu';
         $left = trim((string)preg_replace($rx, '[private word]', (string)$m['content']));
@@ -365,44 +378,21 @@ function ab_ai_personal(array $msgs): array {
     $userText .= ' ' . ab_ai_norm((string)$msgs[$k]['content']);
   }
   $userText = ' ' . $userText . ' ';
-  if ($verified) {
-    $out .= "\n\nSPECIAL PERSON MODE (verified by the private word Abid gave her; this overrides the relationship-privacy rule for this chat only): you are talking with {PARTNER}, the special person in Abid's life. Be warm, caring and natural, like a close, kind friend. Start with a fresh warm greeting each time in her own script (Bengali script for example \"{PARTNER}! তুমি এসেছো! কেমন আছো?\"; Banglish for example \"Are {PARTNER}! Tumi esecho! Aj tomar din kemon katche?\") and never repeat the same greeting. Use তুমি with her. Ask about her, one thing at a time, following what she said before: her exams, classes, studies, her day, what's new, whether she needs help, whether she is taking care of herself. Remember what she told you earlier in this chat and in her saved memories and follow up on it (for example ask how the exam she mentioned went). You may say that Abid cares about her and that she matters to him. Never claim what Abid is doing right now, whether he is busy, sleeping or coming, and never invent feelings or events on his behalf. Never repeat the private word.";
-    $out .= "\n" . ($P['partner_more'] ?? '') . "\n" . ($P['partner_mode'] ?? '');
-    $out .= "\nLanguage with her: always use tumi forms (this overrides the apni rule), and write in her own script: if she writes Banglish, reply in Banglish (for example \"{PARTNER}! Tumi esecho! Kemon acho?\"), never switch script in the middle of the chat. If she asks what Abid is doing right now, say honestly that you do not know what he is doing at this moment; you may add, as general context, that his days are usually very busy. Never say he is working, sleeping or anything else right now.";
-    $GLOBALS['ab_ai_tumi'] = true;
-  } elseif (($pn !== '' && preg_match('~' . preg_quote(mb_strtolower($pn), '~') . ($pb !== '' ? '|' . preg_quote($pb, '~') : '') . '~u', $userText))) {
-    $out .= "\n\nSomeone in this chat mentions {PARTNER}. Saying a name, or saying where she lives, does not prove who someone is. If the visitor says they are {PARTNER}, ask warmly once: \"তুমি কি সেই {PARTNER}, যার সঙ্গে Abid-এর বিশেষ সম্পর্ক রয়েছে?\" and, if yes, ask for the private word Abid gave her. "
-      . ($h === '' ? 'The private word is not set up yet, so say kindly that you cannot confirm it right now. ' : 'The server checks the private word itself: in this chat it has NOT been typed correctly so far. So if they typed a word, it is not the right one: say kindly that it does not match, and treat them as a normal visitor. Never act as if they were verified. ')
-      . 'Until confirmed, share nothing private about Abid or {PARTNER}.';
+  /* 2. she says who she is: "ami {PARTNER}", "I am {PARTNER}", "amar nam {PARTNER}", "{PARTNER} bolchi" ... */
+  $nm = preg_quote(mb_strtolower($pn), '~') . ($pb !== '' ? '|' . preg_quote($pb, '~') : '');
+  $claim = (bool)preg_match('~(?:\b(?:ami|i am|i m|im|its|it s|this is|amar nam|amar naam|my name is|my name s)|আমি|আমার নাম)\s+(?:holo |hocche |হলো |হচ্ছে |is )?(?:' . $nm . ')|(?:' . $nm . ')\s+(?:bolchi|bolsi|bolcchi|here|বলছি)~u', $userText);
+  $known = $vid !== '' && isset(ab_ai_partner_ids()[$vid]);
+  if ($byWord || $claim || $known) {
+    if ($byWord || $claim) ab_ai_partner_seen($vid, $byWord); elseif ($known) ab_ai_partner_seen($vid, false);
+    $out .= "\n\nSPECIAL PERSON MODE (Abid's own wish, 23 Nov 2026; this overrides the private-life rule for this chat only): the visitor " . ($claim || $byWord ? 'says she is' : 'is, from her earlier visits on this device,') . " {PARTNER}, the special person in Abid's life." . ($claim || $byWord ? '' : ' She told you so on an earlier visit, so you already know her: never ask her name, and greet her by name in your very first line (this overrides the new-visitor rule).') . " Be warm, caring and natural, like a close, kind friend. Start with a fresh warm greeting each time, in her own script (Bengali script for example \"{PARTNER}! তুমি এসেছো! কেমন আছো?\"; Banglish for example \"Are {PARTNER}! Tumi esecho! Aj tomar din kemon katche?\") and never repeat the same greeting. Ask about her, one thing at a time, following what she said before: her exams, classes, studies, her day, what's new, whether she needs help, whether she is taking care of herself. Remember what she told you earlier in this chat and in her saved memories and follow up on it. You may say that Abid cares about her and that she matters to him. Never claim what Abid is doing right now, and never invent feelings or events on his behalf. Never repeat a private word."
+      . "\n" . ($P['partner_mode'] ?? '')
+      . "\nLanguage with her: always use tumi forms (this overrides the apni rule), and write in her own script: if she writes Banglish, reply in Banglish, never switch script in the middle of the chat. If she asks what Abid is doing right now, say honestly that you do not know what he is doing at this moment; you may add, as general context, that his days are usually very busy.";
+    $GLOBALS['ab_ai_tumi'] = true; $GLOBALS['ab_ai_partner_name'] = $pn;
+  } elseif (preg_match('~' . $nm . '~u', $userText)) {
+    $out .= "\n\nThe visitor mentions the name {PARTNER} but does not say that she is {PARTNER}. Do not say who {PARTNER} is or anything about Abid's private life; answer as for any other name.";
   }
-  /* 0.9.19: approved profile facts, and the relationship details only when the visitor asks about that */
-  if (!empty($P['abid'])) $out .= "\n\n" . $P['abid'];
-  if (!$verified && !empty($P['partner_more']) && preg_match('~relation|girl ?friend|\bgf\b|\bex\b|\blove|prem|bhalobas|valobas|biye|bie korb|single|প্রেম|গার্লফ্রেন্ড|জিএফ|সম্পর্ক|ভালোবা|ভালবা|বিয়ে|সিঙ্গেল|এক্স~u', $userText))
-    $out .= "\n\nOnly because the visitor asks about Abid's love life (the relationship-privacy rule still applies, share only what is asked): " . $P['partner_more'];
-  /* a name the visitor typed: Latin with a short Banglish ending (ranar, tishake), or Bengali script with any ending */
-  $has = function (string $t) use ($userText): bool { $t = ab_ai_norm($t); if ($t === '') return false;
-    return (bool)preg_match(preg_match('~\p{Bengali}~u', $t) ? '~(?<![\p{L}\p{M}])' . preg_quote($t, '~') . '~u' : '~(?<![\p{L}\p{M}])' . preg_quote($t, '~') . '(?:s|er|r|ke|k|re|ra|der|o|i|ji|bhai|vai|apu|mama)?(?![\p{L}\p{M}])~u', $userText); };
-  /* 2. batchmates: only the people the visitor actually named */
-  $common = ['md', 'mohammad', 'al', 'islam', 'rahman', 'hasan', 'hassan', 'hossain', 'akter', 'jahan', 'khan', 'ahmmed', 'ahmed', 'ahmad', 'chowdhury', 'sultana', 'mahmud', 'kumar', 'haq', 'amin', 'huda', mb_strtolower($pn), 'mahin', 'abid', 'zaman', 'shah'];
-  $hits = []; $b = $P['batch'] ?? null;
-  if ($b) foreach ($b['students'] as [$roll, $name]) {
-    if ($roll === ($P['self_roll'] ?? '')) continue;   // Abid himself
-    $full = ab_ai_norm(preg_replace('~^(md\.?|mohammad)\s+~i', '', $name)); $hit = str_contains($userText, ' ' . $full . ' ');
-    if (!$hit) foreach (explode(' ', $full) as $t) if (mb_strlen($t) >= 4 && !in_array($t, $common, true) && str_contains($userText, ' ' . $t . ' ')) { $hit = true; break; }
-    if ($hit) $hits[] = $name . (str_contains($userText, $roll) ? " (roll $roll, which the visitor gave)" : '') . (isset($b['notes'][$name]) ? ' — ' . $b['notes'][$name] : '');
-  }
-  $rollOnly = $b && preg_match('~\b\d{9}\b~', $userText) && !$hits;
-  if ($hits) $out .= "\n\nBATCHMATES: the visitor mentioned names that match Abid's batchmates (BBA 73rd batch, Shanto-Mariam University of Creative Technology):\n- " . implode("\n- ", array_slice($hits, 0, 6))
-    . "\nIf the visitor says they ARE one of these people, be happy and warm, for example: \"ওহ, তোমাকে চিনতে পারছি! তুমি তো Abid-এর University Batch-এর। কেমন চলছে সব?\", then chat naturally and ask one thing at a time (which clubs they are in, how university life and classes are going, which subject they like), never the same question twice. If they ask about one of these people, you may say that person is Abid's batchmate and share Abid's note about them if there is one. Never share anyone's roll number, phone number or other personal details, never list the batch, and never name a batchmate the visitor did not name. A roll number only confirms a person when it matches the name the visitor gave.";
-  elseif ($rollOnly) $out .= "\n\nThe visitor gave a roll number. Never say which name a roll number belongs to; if they want to be recognised, ask them for their name.";
-  /* 3. other people Abid told about (only when named) */
-  $named = [];
-  foreach ((array)($P['others'] ?? []) as $row) { [$nm, $note] = $row; $al = array_merge([$nm], (array)($row[2] ?? []));
-    $hit = false; foreach ($al as $a) if ($has($a)) { $hit = true; break; }
-    if ($hit) { $named[] = mb_strtolower(explode(' ', $nm)[0]); $out .= "\n\nAbout {$nm} (Abid's own words, private context, not a verified fact; say it kindly, never claim more, and keep anything marked PRIVATE to yourself): {$note}"; } }
-  /* friends Abid named: many people share these names, so ask, do not assume */
-  $fr = []; foreach ((array)($P['friends'] ?? []) as $f2) if (!in_array(mb_strtolower($f2), $named, true) && $has($f2)) $fr[] = $f2;
-  if ($fr) $out .= "\n\nAbid has friends with these names: " . implode(', ', $fr) . ". If the visitor says that is their own name, kindly ask once whether they are Abid's friend (many people share a name, so do not assume); if yes, welcome them warmly as Abid's friend and chat naturally, one light question at a time. If they ask about such a friend, say only that Abid has a friend by that name.";
-  if ($b && preg_match('~shanto|smuct|mariam|73rd|73 batch|bba~u', $userText) && !$hits) $out .= "\n\nThe visitor mentions Shanto-Mariam University or the BBA 73rd batch, Abid's own university and batch. If they say they study there, be friendly (for example: \"ওহ, তোমরাও তো Shanto-Mariam University-এর!\") and ask their name, or one light question about university life or clubs.";
+  /* someone says they know Abid: the AI has nothing about them (owner deleted all personal notes, 23 Nov) */
+  if ($out === '' && preg_match('~bondhu|bondu|friend|class ?mate|batch ?mate|cousin|relative|attiyo|বন্ধু|ক্লাসমেট|ব্যাচমেট|আত্মীয়|কাজিন~u', $userText) && preg_match('~abid|আবিদ~u', $userText))
+    $out .= "\n\nThe visitor says they know Abid. You have no information at all about them. Welcome them warmly, but do not say or hint that Abid told you about them, mentioned them, praises them or that you have heard of them.";
   return [ab_ai_names($out), $msgs];
 }

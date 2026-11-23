@@ -21,7 +21,7 @@ this.p=k-c.length;return true}}registerProcessor('abidora-mic',P)`;
 
 const b64 = (buf: ArrayBuffer) => { let s = ''; const u = new Uint8Array(buf); for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode(...u.subarray(i, i + 0x8000)); return btoa(s); };
 
-export async function startLive(api: string, lang: string, voice: 'm' | 'f', know: { memory: string[]; call: string; recent: { role: string; content: string }[]; alt?: number; handoff?: boolean }, ev: LiveEv): Promise<Live | null> {
+export async function startLive(api: string, lang: string, voice: 'm' | 'f', know: { memory: string[]; call: string; recent: { role: string; content: string }[]; alt?: number; handoff?: boolean; vid?: string }, ev: LiveEv): Promise<Live | null> {
   /* The audio output is opened first, while we are still inside the visitor's tap: phones (and Safari) keep an
      AudioContext made later, after the network wait, silent. A short silent sound unlocks it on iPhone. */
   const AC = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
@@ -53,7 +53,6 @@ export async function startLive(api: string, lang: string, voice: 'm' | 'f', kno
 
   const outGain = ctx.createGain(); const an = ctx.createAnalyser(); an.fftSize = 1024; outGain.connect(an); an.connect(ctx.destination);
   const buf = new Float32Array(1024);
-  let open = false, hot = 0, quietN = 0, pre: string[] = [];
   let closed = false, muted = false, ready = false, next = 0, srcs: AudioBufferSourceNode[] = [], drop = false;
   /* backup for the remember_name tool: if the visitor plainly says their name, keep it even when the model forgets the tool */
   let named = !!know.call;
@@ -92,18 +91,8 @@ export async function startLive(api: string, lang: string, voice: 'm' | 'f', kno
     node.port.onmessage = (e) => {
       if (closed || muted) return;
       const msg = JSON.stringify({ realtimeInput: { audio: { data: b64(e.data as ArrayBuffer), mimeType: 'audio/pcm;rate=16000' } } });
-      /* 0.9.20: send the microphone only when someone is talking. Silence is not sent (it was about 2.5 MB a minute
-         on mobile data), and while the AI itself is speaking only a clearly louder voice goes through, so the phone's
-         own speaker sound cannot "interrupt" the answer and cut it off. 0.4 s before the voice is kept, so no word is lost. */
-      const pcm = new Int16Array(e.data as ArrayBuffer); let q = 0; for (let i = 0; i < pcm.length; i += 4) q += (pcm[i] / 32768) ** 2;
-      const rms = Math.sqrt(q / (pcm.length / 4)), talking = srcs.length > 0 || pend.length > 0;
-      if (ready && ws.readyState === 1) {
-        const loud = rms > (talking ? 0.045 : 0.008);
-        hot = loud ? hot + 1 : 0;
-        if (loud && (!talking || hot >= 2)) { if (!open) { open = true; pre.forEach((m) => ws.send(m)); } pre = []; quietN = 0; }
-        else if (open && ++quietN > (talking ? 3 : 12)) { open = false; ws.send(JSON.stringify({ realtimeInput: { audioStreamEnd: true } })); }
-        if (!open) { pre.push(msg); if (pre.length > 4) pre.shift(); return; }
-      }
+      /* 0.9.21 (owner: "my voice is not working"): the 0.9.20 silence gate could keep a quiet phone microphone shut, so the
+         AI never heard the visitor. Back to sending the microphone all the time, as in 0.9.19 (Google decides what is speech). */
       if (!ready || ws.readyState !== 1) { early.push(msg); if (early.length > 30) early.shift(); return; }   // keep the first 3 s spoken while connecting
       ws.send(msg);
     };
@@ -153,7 +142,7 @@ export async function startLive(api: string, lang: string, voice: 'm' | 'f', kno
       done = false; pend.push(ab); pendDur += ab.duration;
       if (!buffering) play();
       else if (pendDur >= cushion) play();
-      else if (!pendT) pendT = window.setTimeout(play, 1200);      // never hold a short answer back for long
+      else if (!pendT) pendT = window.setTimeout(play, 600);      // never hold a short answer back for long
       ev.state('speak');
     }
     if (sc.turnComplete && pend.length) play();          // the answer is complete: play what is left now

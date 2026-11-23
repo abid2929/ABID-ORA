@@ -29,6 +29,8 @@ let mem = store.get<{ call: string; items: string[] }>(K.mem, { call: '', items:
 const vs = Object.assign({ mode: false, voice: '', live: 'm' as 'm' | 'f', lang: I18N.lang, langSet: false, rate: 1, pitch: 1, vol: 1 }, store.get(K.voice, {}));
 const saveChats = () => { chats.sort((a, b) => b.ts - a.ts); chats = chats.slice(0, 60); store.set(K.chats, chats); tools.prune(chats); };
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+/* 0.9.21: a random id for this browser (nothing personal), so the AI can recognise someone Abid asked it to remember */
+const VID = (() => { try { let v = localStorage.getItem('abidora.ai.vid'); if (!v || !/^[a-z0-9]{8,40}$/.test(v)) { v = (uid() + uid()).replace(/[^a-z0-9]/g, '').slice(0, 24); localStorage.setItem('abidora.ai.vid', v); } return v; } catch { return ''; } })();
 let cur: Chat | null = null;
 let ttsOn = false, handsFree = false, callOn = false;   // handsFree: a spoken question in voice mode, so listen again after answering
 
@@ -211,7 +213,7 @@ async function ask(c: Chat | null = cur, at = (c?.msgs.length ?? 0) - 1, queued 
   let result: Sent = 'ok';
   try {
     const res = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: abort.signal,
-      body: JSON.stringify({ messages: msgs, lang: I18N.lang, memory: mem.items, call: mem.call, files, voice: callOn ? vs.lang : '', cid: target.cid, lite: app.lite() ? 1 : 0, ...extra }) });
+      body: JSON.stringify({ messages: msgs, lang: I18N.lang, memory: mem.items, call: mem.call, files, voice: callOn ? vs.lang : '', vid: VID, cid: target.cid, lite: app.lite() ? 1 : 0, ...extra }) });
     reached = true; app.markUp();
     if (!res.ok || !(res.headers.get('content-type') || '').includes('event-stream')) {
       let code = 'other'; try { code = (await res.json()).code || code; } catch { /* not JSON */ }
@@ -685,7 +687,7 @@ function goLive() {
   /* what the call should know: the visitor's saved memory, their name, and the last turns of this chat */
   const recent = (cur?.msgs || []).slice(-10).map((m) => ({ role: m.role, content: String(m.content).slice(0, 400) }));
   const ho = handoff; handoff = false;
-  void startLive(LIVE, vs.lang, vs.live, { memory: mem.items, call: mem.call, recent, alt: liveAlt, handoff: ho }, {
+  void startLive(LIVE, vs.lang, vs.live, { memory: mem.items, call: mem.call, recent, alt: liveAlt, handoff: ho, vid: VID }, {
     state: (st) => { if (g === liveGen && callOn) setState(st); },
     heard: (t, fin) => { if (g !== liveGen) return; callText(t, true); if (fin) { logTurn('me', t); pushTurn('user', t); } },
     said: (t, fin) => { if (g !== liveGen) return; callText(t); if (fin) { logTurn('ai', t); pushTurn('assistant', t); } },

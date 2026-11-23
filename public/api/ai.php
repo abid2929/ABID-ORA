@@ -118,8 +118,9 @@ $sseOpen();
 
 $GLOBALS['ab_ai_today'] = gmdate('j F Y');
 $GLOBALS['ab_ai_facts'] = ab_ai_site_facts();
-$system = ab_ai_system($lang, $memory, $call);
-[$personal, $msgs] = ab_ai_personal($msgs); $system .= $personal;   // 0.9.18: Abid's people + the special person's private word (removed from the messages)
+[$personal, $msgs] = ab_ai_personal($msgs, (string)($in['vid'] ?? ''));
+if ($call === '' && !empty($GLOBALS['ab_ai_partner_name'])) $call = (string)$GLOBALS['ab_ai_partner_name'];   // 0.9.21: she is known, so the AI does not ask her name
+$system = ab_ai_system($lang, $memory, $call) . $personal;   // 0.9.18: Abid's people + the special person's private word (removed from the messages)
 $voiceLang = (string)($in['voice'] ?? ''); if (!isset(AB_LANGS[$voiceLang])) $voiceLang = '';   // set only during a voice call
 $system .= ab_ai_turn_hints($voiceLang === 'bn' ? 'bn' : $lang, $msgs, $voiceLang);   // script, Banglish, "speak Bangla", tumi/apni: see the library
 $temp = ab_ai_turn_temp($msgs);   // lower for letters, health, science, history, code and translation
